@@ -1,0 +1,1460 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Benes — AI Fitness Platform</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;1,400&family=Syne:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --bg:#08101f;--surface:rgba(255,255,255,0.03);--border:rgba(255,255,255,0.07);
+  --white:#f8f6f2;--muted:rgba(248,246,242,0.45);
+  --gold:#d4a84b;--gold-light:#e8c98a;--gold-dim:rgba(212,168,75,0.1);
+  --blue:#3b82f6;--blue-dim:rgba(59,130,246,0.1);
+  --green:#52c87a;--red:#e05252;--purple:#8b5cf6;
+}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--white);font-family:'Syne',sans-serif;min-height:100vh;overflow-x:hidden;}
+.bg-wrap{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;}
+.orb{position:absolute;border-radius:50%;filter:blur(130px);animation:drift 22s ease-in-out infinite;}
+.o1{width:600px;height:600px;background:radial-gradient(circle,rgba(37,99,235,0.15),transparent);top:-150px;left:-150px;}
+.o2{width:400px;height:400px;background:radial-gradient(circle,rgba(30,58,95,0.12),transparent);bottom:-100px;right:-100px;animation-delay:-11s;}
+.o3{width:300px;height:300px;background:radial-gradient(circle,rgba(212,168,75,0.08),transparent);top:40%;left:60%;animation-delay:-17s;}
+@keyframes drift{0%,100%{transform:translate(0,0)}33%{transform:translate(30px,-20px)}66%{transform:translate(-20px,30px)}}
+.bg-grid{position:fixed;inset:0;z-index:0;pointer-events:none;background:linear-gradient(rgba(255,255,255,0.013) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.013) 1px,transparent 1px);background-size:80px 80px;}
+
+/* HEADER */
+header{position:fixed;top:0;left:0;right:0;z-index:100;height:68px;padding:0 48px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);background:rgba(8,16,31,0.88);backdrop-filter:blur(20px);}
+.logo{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:600;letter-spacing:4px;}
+.logo span{color:var(--gold);}
+.hright{display:flex;align-items:center;gap:16px;}
+.htag{font-family:'JetBrains Mono',monospace;font-size:0.57rem;letter-spacing:3px;color:var(--muted);text-transform:uppercase;}
+.hst{display:flex;align-items:center;gap:7px;font-family:'JetBrains Mono',monospace;font-size:0.57rem;letter-spacing:2px;color:var(--green);}
+.hst::before{content:'';width:6px;height:6px;background:var(--green);border-radius:50%;box-shadow:0 0 8px var(--green);animation:bl 2s infinite;}
+@keyframes bl{0%,100%{opacity:1}50%{opacity:0.4}}
+.hbtn{background:var(--gold);border:none;color:#000;padding:8px 20px;font-family:'Syne',sans-serif;font-size:0.72rem;font-weight:700;letter-spacing:2px;cursor:pointer;transition:all 0.3s;}
+.hbtn:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(212,168,75,0.3);}
+
+/* PAGES */
+.page{display:none;position:relative;z-index:10;}
+.page.active{display:block;}
+
+/* LANDING PAGE */
+.landing-hero{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:110px 40px 60px;text-align:center;}
+.lh-inner{max-width:800px;}
+.badge{display:inline-flex;align-items:center;gap:10px;background:rgba(212,168,75,0.08);border:1px solid rgba(212,168,75,0.2);padding:8px 18px;margin-bottom:32px;opacity:0;animation:up 0.7s 0.1s forwards;}
+.badge-dot{width:6px;height:6px;background:var(--gold);border-radius:50%;box-shadow:0 0 8px var(--gold);}
+.badge-txt{font-family:'JetBrains Mono',monospace;font-size:0.58rem;letter-spacing:3px;color:var(--gold);text-transform:uppercase;}
+.l-title{font-family:'Playfair Display',serif;font-size:clamp(3rem,7vw,6rem);font-weight:500;line-height:1.05;margin-bottom:24px;opacity:0;animation:up 0.7s 0.25s forwards;}
+.l-title em{font-style:italic;color:var(--gold);}
+.l-sub{color:var(--muted);font-size:0.95rem;line-height:1.9;max-width:560px;margin:0 auto 48px;font-weight:300;opacity:0;animation:up 0.7s 0.4s forwards;}
+.free-badge{display:inline-block;background:rgba(82,200,122,0.1);border:1px solid rgba(82,200,122,0.3);color:var(--green);padding:6px 16px;font-family:'JetBrains Mono',monospace;font-size:0.6rem;letter-spacing:3px;margin-bottom:40px;opacity:0;animation:up 0.7s 0.55s forwards;}
+.choice-wrap{display:flex;gap:20px;justify-content:center;opacity:0;animation:up 0.7s 0.7s forwards;flex-wrap:wrap;}
+.choice-card{background:rgba(255,255,255,0.025);border:1px solid var(--border);padding:36px 32px;cursor:pointer;transition:all 0.35s;width:280px;text-align:left;position:relative;overflow:hidden;}
+.choice-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;opacity:0;transition:opacity 0.35s;}
+.choice-card.individual::before{background:linear-gradient(90deg,transparent,var(--blue),transparent);}
+.choice-card.salon::before{background:linear-gradient(90deg,transparent,var(--gold),transparent);}
+.choice-card:hover{transform:translateY(-6px);}
+.choice-card.individual:hover{border-color:rgba(59,130,246,0.4);box-shadow:0 20px 50px rgba(37,99,235,0.1);}
+.choice-card.salon:hover{border-color:rgba(212,168,75,0.4);box-shadow:0 20px 50px rgba(212,168,75,0.1);}
+.choice-card:hover::before{opacity:1;}
+.cc-icon{font-size:2rem;margin-bottom:16px;display:block;}
+.cc-title{font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:500;margin-bottom:8px;}
+.cc-sub{font-size:0.8rem;color:var(--muted);font-weight:300;line-height:1.6;margin-bottom:20px;}
+.cc-tag{font-family:'JetBrains Mono',monospace;font-size:0.55rem;letter-spacing:2px;padding:4px 10px;border:1px solid;display:inline-block;}
+.choice-card.individual .cc-tag{color:var(--blue);border-color:rgba(59,130,246,0.3);}
+.choice-card.salon .cc-tag{color:var(--gold);border-color:rgba(212,168,75,0.3);}
+.cc-arrow{position:absolute;bottom:28px;right:28px;font-size:1.2rem;color:var(--muted);transition:all 0.3s;}
+.choice-card:hover .cc-arrow{transform:translateX(4px);}
+.choice-card.individual:hover .cc-arrow{color:var(--blue);}
+.choice-card.salon:hover .cc-arrow{color:var(--gold);}
+
+/* STATS */
+.stats-row{display:flex;gap:48px;justify-content:center;padding:60px 0 80px;border-top:1px solid var(--border);margin-top:40px;}
+.stat{text-align:center;}
+.stat-num{font-family:'Playfair Display',serif;font-size:2.2rem;font-weight:600;color:var(--gold);}
+.stat-lbl{font-family:'JetBrains Mono',monospace;font-size:0.55rem;letter-spacing:3px;color:var(--muted);margin-top:4px;text-transform:uppercase;}
+
+@keyframes up{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+
+/* DASHBOARD LAYOUT */
+.dashboard{display:flex;min-height:100vh;padding-top:68px;}
+
+/* SIDEBAR */
+.sidebar{width:240px;flex-shrink:0;border-right:1px solid var(--border);padding:32px 0;background:rgba(8,16,31,0.6);backdrop-filter:blur(20px);position:fixed;top:68px;left:0;bottom:0;overflow-y:auto;z-index:50;transform:translateX(-100%);transition:transform 0.3s;}
+.sidebar.open{transform:translateX(0);}
+.sb-logo{padding:0 24px 24px;border-bottom:1px solid var(--border);margin-bottom:16px;}
+.sb-logo-txt{font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:600;letter-spacing:3px;}
+.sb-logo-txt span{color:var(--gold);}
+.sb-plan{display:inline-flex;align-items:center;gap:6px;margin-top:8px;background:var(--gold-dim);border:1px solid rgba(212,168,75,0.25);padding:4px 10px;}
+.sb-plan-txt{font-family:'JetBrains Mono',monospace;font-size:0.55rem;letter-spacing:2px;color:var(--gold);}
+.sb-section{padding:0 24px;margin-bottom:8px;}
+.sb-section-lbl{font-family:'JetBrains Mono',monospace;font-size:0.5rem;letter-spacing:3px;color:var(--muted);text-transform:uppercase;margin-bottom:8px;padding:0 8px;}
+.sb-item{display:flex;align-items:center;gap:12px;padding:10px 12px;cursor:pointer;transition:all 0.25s;border-radius:4px;position:relative;}
+.sb-item:hover{background:rgba(255,255,255,0.04);}
+.sb-item.active{background:rgba(212,168,75,0.08);border-left:2px solid var(--gold);}
+.sb-item.active .sb-item-txt{color:var(--gold);}
+.sb-item.locked{opacity:0.5;cursor:default;}
+.sb-item-icon{font-size:0.9rem;width:18px;text-align:center;}
+.sb-item-txt{font-size:0.8rem;font-weight:500;color:var(--muted);transition:color 0.25s;}
+.sb-item.active .sb-item-txt{color:var(--gold);}
+.lock-icon{position:absolute;right:12px;font-size:0.6rem;color:var(--muted);}
+.premium-tag{position:absolute;right:12px;font-family:'JetBrains Mono',monospace;font-size:0.45rem;letter-spacing:1px;color:var(--gold);background:rgba(212,168,75,0.1);border:1px solid rgba(212,168,75,0.2);padding:2px 6px;}
+
+/* MAIN CONTENT */
+.main-content{flex:1;padding:40px 40px 80px;margin-left:0;transition:margin-left 0.3s;}
+.main-content.shifted{margin-left:240px;}
+
+/* TOGGLE BTN */
+.sidebar-toggle{position:fixed;top:82px;left:16px;z-index:200;background:rgba(8,16,31,0.9);border:1px solid var(--border);color:var(--muted);width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.25s;backdrop-filter:blur(12px);}
+.sidebar-toggle:hover{border-color:var(--gold);color:var(--gold);}
+
+/* SECTION HEADERS */
+.sec-eye{font-family:'JetBrains Mono',monospace;font-size:0.58rem;letter-spacing:4px;color:var(--gold);text-transform:uppercase;margin-bottom:10px;}
+.sec-title{font-family:'Playfair Display',serif;font-size:2.2rem;font-weight:500;line-height:1.1;margin-bottom:8px;}
+.sec-title em{font-style:italic;color:var(--gold);}
+.sec-sub{color:var(--muted);font-size:0.88rem;font-weight:300;line-height:1.75;margin-bottom:36px;}
+
+/* CARDS */
+.gc{background:rgba(255,255,255,0.025);border:1px solid var(--border);padding:32px;margin-bottom:16px;position:relative;overflow:hidden;transition:border-color 0.3s;}
+.gc::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(212,168,75,0.25),transparent);opacity:0;transition:opacity 0.3s;}
+.gc:hover{border-color:rgba(212,168,75,0.15);}
+.gc:hover::before{opacity:1;}
+
+/* PREMIUM LOCK */
+.premium-lock{position:relative;}
+.premium-lock .lock-overlay{position:absolute;inset:0;background:rgba(8,16,31,0.85);backdrop-filter:blur(4px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;z-index:10;}
+.lock-icon-big{font-size:1.5rem;}
+.lock-msg{font-family:'JetBrains Mono',monospace;font-size:0.6rem;letter-spacing:2px;color:var(--muted);text-transform:uppercase;}
+.lock-btn{background:var(--gold);border:none;color:#000;padding:10px 24px;font-family:'Syne',sans-serif;font-size:0.72rem;font-weight:700;letter-spacing:2px;cursor:pointer;transition:all 0.3s;margin-top:4px;}
+.lock-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(212,168,75,0.3);}
+
+/* PROGRAM FORM */
+.fgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(185px,1fr));gap:18px;}
+.fw{display:flex;flex-direction:column;gap:9px;}
+.fl{font-family:'JetBrains Mono',monospace;font-size:0.55rem;letter-spacing:3px;color:var(--muted);text-transform:uppercase;}
+.fiw{position:relative;}
+.fiw input,.fiw select{width:100%;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-bottom:1px solid rgba(255,255,255,0.13);color:var(--white);padding:13px 44px 13px 14px;font-family:'Syne',sans-serif;font-size:0.88rem;outline:none;transition:all 0.3s;-webkit-appearance:none;border-radius:0;}
+.fiw input:focus,.fiw select:focus{border-color:rgba(212,168,75,0.35);border-bottom-color:var(--gold);background:rgba(212,168,75,0.03);}
+.fiw select option{background:#111;}
+.fu{position:absolute;right:12px;top:50%;transform:translateY(-50%);font-family:'JetBrains Mono',monospace;font-size:0.58rem;color:var(--muted);pointer-events:none;}
+.sgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px;}
+.sbtn{background:rgba(255,255,255,0.025);border:1px solid var(--border);color:var(--muted);padding:16px 10px;text-align:center;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.75rem;font-weight:500;transition:all 0.25s;}
+.sbtn:hover{border-color:rgba(212,168,75,0.35);color:var(--white);}
+.sbtn.sel{border-color:var(--gold);color:var(--gold-light);background:rgba(212,168,75,0.06);}
+.sico{font-size:1.3rem;margin-bottom:8px;display:block;}
+.ssub{font-size:0.58rem;color:var(--muted);margin-top:4px;font-weight:300;}
+.mwrap{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
+.mchip{padding:11px 8px;border:1px solid var(--border);background:transparent;color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:0.55rem;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all 0.25s;text-align:center;}
+.mchip:hover{border-color:rgba(212,168,75,0.3);color:var(--white);}
+.mchip.on{border-color:var(--gold);color:var(--gold);background:rgba(212,168,75,0.06);}
+
+/* UPLOAD */
+.uzone{border:1px dashed rgba(255,255,255,0.1);padding:48px 36px;text-align:center;cursor:pointer;transition:all 0.4s;position:relative;}
+.uzone::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at center,rgba(212,168,75,0.04),transparent 70%);opacity:0;transition:opacity 0.4s;}
+.uzone:hover{border-color:rgba(212,168,75,0.4);}
+.uzone:hover::before{opacity:1;}
+.uzone.filled{border-color:rgba(82,200,122,0.4);}
+.uib{width:56px;height:56px;border:1px solid var(--border);display:grid;place-items:center;margin:0 auto 16px;font-size:1.4rem;}
+.utit{font-family:'Playfair Display',serif;font-size:1rem;font-style:italic;margin-bottom:6px;}
+.usub{font-size:0.74rem;color:var(--muted);font-weight:300;line-height:1.7;}
+.usub strong{color:var(--gold);font-weight:500;}
+#fileInput{display:none;}
+.pstrip{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px;}
+.pthmb{position:relative;width:72px;height:96px;border:1px solid var(--border);overflow:hidden;}
+.pthmb img{width:100%;height:100%;object-fit:cover;display:block;}
+.pthmb button{position:absolute;top:0;right:0;background:rgba(0,0,0,0.8);border:none;color:var(--red);width:20px;height:20px;cursor:pointer;font-size:0.65rem;display:grid;place-items:center;}
+
+/* CONSENT */
+.consent-box{background:rgba(212,168,75,0.04);border:1px solid rgba(212,168,75,0.15);padding:16px 20px;margin-bottom:20px;}
+.consent-inner{display:flex;align-items:flex-start;gap:12px;}
+.consent-inner input[type="checkbox"]{width:16px;height:16px;margin-top:2px;accent-color:var(--gold);flex-shrink:0;cursor:pointer;}
+.consent-txt{font-size:0.78rem;color:var(--muted);line-height:1.6;}
+.consent-txt a{color:var(--gold);text-decoration:none;}
+
+/* NAV */
+.nav-row{display:flex;align-items:center;justify-content:space-between;margin-top:32px;gap:14px;}
+.bprev{background:transparent;border:1px solid var(--border);color:var(--muted);padding:12px 24px;font-family:'Syne',sans-serif;font-size:0.75rem;font-weight:500;letter-spacing:2px;cursor:pointer;transition:all 0.25s;}
+.bprev:hover{border-color:var(--muted);color:var(--white);}
+.bnext{background:var(--gold);border:none;color:#000;padding:14px 40px;font-family:'Syne',sans-serif;font-size:0.78rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;cursor:pointer;transition:all 0.3s;position:relative;overflow:hidden;}
+.bnext::before{content:'';position:absolute;inset:0;background:rgba(255,255,255,0.14);transform:translateX(-100%);transition:transform 0.35s;}
+.bnext:hover::before{transform:translateX(0);}
+.bnext:hover{transform:translateY(-2px);box-shadow:0 12px 36px rgba(212,168,75,0.3);}
+.bnext:disabled{opacity:0.4;cursor:not-allowed;transform:none;}
+
+/* RESULT */
+.rbody{background:rgba(255,255,255,0.025);border:1px solid var(--border);padding:44px;line-height:2;font-size:0.9rem;color:rgba(248,246,242,0.82);font-weight:300;position:relative;}
+.rbody::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--gold),rgba(212,168,75,0.2),transparent);}
+.rbody h1{font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:500;color:var(--white);margin:0 0 20px;padding-bottom:14px;border-bottom:1px solid var(--border);}
+.rbody h2{font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:500;color:var(--gold-light);margin:32px 0 10px;font-style:italic;}
+.rbody h3{font-family:'Syne',sans-serif;font-size:0.68rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin:24px 0 8px;}
+.rbody strong{color:var(--white);font-weight:600;}
+.rbody p{margin-bottom:12px;}
+.rbody ul,.rbody ol{padding-left:20px;margin:10px 0 16px;}
+.rbody li{margin-bottom:6px;}
+.rbody hr{border:none;border-top:1px solid var(--border);margin:24px 0;}
+.rbody table{width:100%;border-collapse:collapse;margin:18px 0;font-size:0.82rem;}
+.rbody thead{background:rgba(212,168,75,0.07);}
+.rbody th{padding:11px 14px;font-family:'JetBrains Mono',monospace;font-size:0.53rem;letter-spacing:2px;color:var(--gold);text-transform:uppercase;text-align:left;font-weight:400;border-bottom:1px solid rgba(212,168,75,0.2);}
+.rbody td{padding:11px 14px;border-bottom:1px solid var(--border);color:rgba(248,246,242,0.75);vertical-align:top;}
+.rbody tr:hover td{background:rgba(255,255,255,0.012);}
+
+/* PREMIUM MODAL */
+.modal-overlay{position:fixed;inset:0;z-index:500;background:rgba(8,16,31,0.92);backdrop-filter:blur(20px);display:none;align-items:center;justify-content:center;}
+.modal-overlay.show{display:flex;}
+.modal{background:rgba(255,255,255,0.03);border:1px solid var(--border);padding:48px;max-width:480px;width:90%;text-align:center;position:relative;}
+.modal::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);}
+.modal-title{font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:500;margin-bottom:12px;}
+.modal-title em{font-style:italic;color:var(--gold);}
+.modal-sub{color:var(--muted);font-size:0.85rem;line-height:1.8;margin-bottom:32px;}
+.modal-price{font-family:'Playfair Display',serif;font-size:3rem;color:var(--gold);margin-bottom:8px;}
+.modal-price span{font-size:1rem;color:var(--muted);}
+.modal-features{text-align:left;margin-bottom:32px;}
+.mf-item{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);font-size:0.82rem;color:var(--muted);}
+.mf-item:last-child{border-bottom:none;}
+.mf-check{color:var(--green);font-size:0.8rem;}
+.modal-btn{background:var(--gold);border:none;color:#000;padding:16px 48px;font-family:'Syne',sans-serif;font-size:0.82rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;cursor:pointer;width:100%;transition:all 0.3s;margin-bottom:12px;}
+.modal-btn:hover{transform:translateY(-2px);box-shadow:0 12px 36px rgba(212,168,75,0.3);}
+.modal-close{background:transparent;border:none;color:var(--muted);font-size:0.75rem;cursor:pointer;padding:8px;}
+.modal-close:hover{color:var(--white);}
+
+/* SALON PAGE */
+.salon-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;margin-bottom:32px;}
+.scard{background:var(--surface);border:1px solid var(--border);padding:28px 24px;cursor:pointer;transition:all 0.3s;position:relative;overflow:hidden;}
+.scard::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:0;transition:opacity 0.3s;}
+.scard:hover{border-color:rgba(212,168,75,0.4);transform:translateY(-4px);box-shadow:0 16px 40px rgba(212,168,75,0.08);}
+.scard:hover::before{opacity:1;}
+.scard.soon{opacity:0.38;pointer-events:none;}
+.sc-num{font-family:'Playfair Display',serif;font-size:2.2rem;font-weight:600;color:rgba(212,168,75,0.12);line-height:1;margin-bottom:14px;}
+.sc-name{font-family:'Playfair Display',serif;font-size:1.15rem;font-weight:500;margin-bottom:4px;}
+.sc-city{font-family:'JetBrains Mono',monospace;font-size:0.54rem;letter-spacing:3px;color:var(--muted);margin-bottom:16px;}
+.sc-tags{display:flex;gap:6px;margin-bottom:18px;flex-wrap:wrap;}
+.sc-tag{font-family:'JetBrains Mono',monospace;font-size:0.5rem;letter-spacing:1px;color:var(--gold);border:1px solid rgba(212,168,75,0.3);padding:3px 8px;}
+.sc-enter{display:flex;align-items:center;gap:8px;font-size:0.7rem;font-weight:600;color:var(--muted);letter-spacing:2px;text-transform:uppercase;transition:color 0.3s;}
+.scard:hover .sc-enter{color:var(--gold);}
+
+/* LOADING */
+.ld{display:none;position:fixed;inset:0;z-index:1000;background:rgba(8,16,31,0.95);backdrop-filter:blur(24px);align-items:center;justify-content:center;flex-direction:column;gap:28px;}
+.ld.on{display:flex;}
+.spin{width:72px;height:72px;position:relative;}
+.spin svg{width:100%;height:100%;animation:sp 2.5s linear infinite;}
+@keyframes sp{to{transform:rotate(360deg)}}
+.spin-in{position:absolute;inset:12px;border:1px solid rgba(212,168,75,0.15);border-radius:50%;animation:sp 4s linear infinite reverse;}
+.ltitle{font-family:'Playfair Display',serif;font-size:1.4rem;font-style:italic;}
+.lstatus{font-family:'JetBrains Mono',monospace;font-size:0.58rem;letter-spacing:3px;color:var(--gold);text-transform:uppercase;animation:fd 1.5s infinite;}
+@keyframes fd{0%,100%{opacity:1}50%{opacity:0.3}}
+.lbar{width:280px;height:1px;background:rgba(255,255,255,0.06);position:relative;overflow:hidden;}
+.lbar::after{content:'';position:absolute;left:0;top:0;height:100%;background:var(--gold);animation:lb 5s ease-in-out infinite;}
+@keyframes lb{0%{width:0}70%{width:85%}100%{width:100%}}
+
+.etst{position:fixed;bottom:32px;right:32px;background:rgba(224,82,82,0.1);border:1px solid var(--red);color:var(--red);padding:12px 20px;display:none;z-index:500;font-family:'JetBrains Mono',monospace;font-size:0.6rem;letter-spacing:1px;backdrop-filter:blur(10px);max-width:320px;}
+
+/* PROGRESS */
+.prog-wrap{display:flex;align-items:center;max-width:500px;margin-bottom:48px;}
+.ps{display:flex;flex-direction:column;align-items:center;gap:8px;flex:1;}
+.pn{width:36px;height:36px;border:1px solid var(--border);border-radius:50%;display:grid;place-items:center;font-family:'JetBrains Mono',monospace;font-size:0.65rem;color:var(--muted);transition:all 0.4s;background:var(--bg);}
+.ps.active .pn{border-color:var(--gold);color:var(--gold);background:rgba(212,168,75,0.08);}
+.ps.done .pn{background:var(--gold);color:#000;border-color:var(--gold);}
+.pl{font-family:'JetBrains Mono',monospace;font-size:0.5rem;letter-spacing:2px;color:var(--muted);text-transform:uppercase;transition:color 0.4s;}
+.ps.active .pl{color:var(--gold);}
+.pline{flex:1;height:1px;background:var(--border);margin:0 -1px;margin-bottom:24px;transition:background 0.5s;}
+.pline.done{background:var(--gold);}
+
+/* FOOTER */
+footer{border-top:1px solid var(--border);padding:32px 48px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;position:relative;z-index:10;}
+.footer-logo{font-family:'Playfair Display',serif;font-size:1rem;font-weight:600;letter-spacing:3px;}
+.footer-logo span{color:var(--gold);}
+.footer-txt{font-family:'JetBrains Mono',monospace;font-size:0.5rem;letter-spacing:2px;color:var(--muted);}
+.footer-links{display:flex;gap:20px;}
+.footer-link{font-family:'JetBrains Mono',monospace;font-size:0.5rem;letter-spacing:2px;color:var(--muted);cursor:pointer;transition:color 0.25s;}
+.footer-link:hover{color:var(--gold);}
+
+/* STEP PANELS */
+.spanel{display:none;}
+.spanel.active{display:block;animation:pIn 0.4s ease forwards;}
+@keyframes pIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+
+/* REPORT CARDS */
+.report-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:24px;}
+.rcard{background:rgba(255,255,255,0.025);border:1px solid var(--border);padding:24px;text-align:center;}
+.rcard-num{font-family:'Playfair Display',serif;font-size:2rem;color:var(--gold);margin-bottom:4px;}
+.rcard-lbl{font-family:'JetBrains Mono',monospace;font-size:0.52rem;letter-spacing:2px;color:var(--muted);text-transform:uppercase;}
+
+@media(max-width:768px){
+  header{padding:0 18px;}
+  .landing-hero{padding:100px 20px 50px;}
+  .choice-wrap{flex-direction:column;align-items:center;}
+  .choice-card{width:100%;max-width:320px;}
+  .stats-row{gap:24px;flex-wrap:wrap;}
+  .main-content{padding:24px 18px 60px;}
+  .mwrap{grid-template-columns:repeat(2,1fr);}
+  .sgrid{grid-template-columns:1fr 1fr;}
+  footer{padding:24px 18px;flex-direction:column;text-align:center;}
+}
+</style>
+</head>
+<body>
+
+<div class="bg-wrap"><div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div></div>
+<div class="bg-grid"></div>
+
+<header>
+  <div class="logo">BENES<span>.</span></div>
+  <div class="hright">
+    <div class="htag">AI Fitness Platform</div>
+    <div class="hst">AKTİF</div>
+    <button class="hbtn" id="premiumHeaderBtn">Premium Al</button>
+  </div>
+</header>
+
+<!-- LANDING PAGE -->
+<div class="page active" id="landingPage">
+  <section class="landing-hero">
+    <div class="lh-inner">
+      <div class="badge"><div class="badge-dot"></div><div class="badge-txt">Türkiye'nin İlk AI Fitness Platformu</div></div>
+      <h1 class="l-title">Sınırlarını <em>Aşmaya</em><br>Hazır Mısın?</h1>
+      <p class="l-sub">Yapay zeka destekli kişisel antrenman ve beslenme programı. Bireysel kullanıcılar ve spor salonları için.</p>
+      <div class="free-badge">İLK 20 GÜN ÜCRETSİZ — KREDİ KARTI GEREKMİYOR</div>
+      <div class="choice-wrap">
+        <div class="choice-card individual" id="goIndividual">
+          <span class="cc-icon">🏃</span>
+          <div class="cc-title">Bireysel</div>
+          <div class="cc-sub">Kişisel antrenman programı, beslenme rehberi ve AI destekli analiz. Kendi hızında ilerle.</div>
+          <span class="cc-tag">ÜCRETSİZ BAŞLA</span>
+          <div class="cc-arrow">→</div>
+        </div>
+        <div class="choice-card salon" id="goSalon">
+          <span class="cc-icon">🏋️</span>
+          <div class="cc-title">Salona Özel</div>
+          <div class="cc-sub">Spor salonunun AI sistemi. Tüm üyeler salonuna özel program alır.</div>
+          <span class="cc-tag">SALON SEÇ</span>
+          <div class="cc-arrow">→</div>
+        </div>
+      </div>
+      <div class="stats-row">
+        
+        <div class="stat"><div class="stat-num">AI</div><div class="stat-lbl">Destekli Analiz</div></div>
+        <div class="stat"><div class="stat-num">%100</div><div class="stat-lbl">Kişiselleştirilmiş</div></div>
+        <div class="stat"><div class="stat-num">7/24</div><div class="stat-lbl">Erişim</div></div>
+      </div>
+    </div>
+  </section>
+  <footer>
+    <div class="footer-logo">BENES<span>.</span></div>
+    <div class="footer-txt">© 2026 BNS BİLİŞİM & YAZILIM OTOMASYON — KVKK KAPSAMINDA KORUNMAKTADIR</div>
+    <div class="footer-links">
+      <span class="footer-link" onclick="showPrivacy()">Gizlilik Politikası</span>
+      <span class="footer-link">Kullanım Koşulları</span>
+      <span class="footer-link">İletişim</span>
+    </div>
+  </footer>
+</div>
+
+<!-- INDIVIDUAL DASHBOARD -->
+<div class="page" id="individualPage">
+  <div class="sidebar-toggle" id="sidebarToggle">☰</div>
+  <div class="sidebar" id="sidebar">
+    <div class="sb-logo">
+      <div class="sb-logo-txt">BENES<span>.</span></div>
+      <div class="sb-plan"><span class="sb-plan-txt">ÜCRETSİZ PLAN</span></div>
+    </div>
+    <div class="sb-section">
+      <div class="sb-section-lbl">Ana Menü</div>
+      <div class="sb-item active" onclick="showSection('program')">
+        <span class="sb-item-icon">🤖</span>
+        <span class="sb-item-txt">Program Al</span>
+      </div>
+      <div class="sb-item" onclick="showSection('report')">
+        <span class="sb-item-icon">📊</span>
+        <span class="sb-item-txt">Raporlarım</span>
+      </div>
+    </div>
+    <div class="sb-section">
+      <div class="sb-section-lbl">Premium</div>
+      <div class="sb-item locked" onclick="showPremium()">
+        <span class="sb-item-icon">🥗</span>
+        <span class="sb-item-txt">Beslenme Planı</span>
+        <span class="premium-tag">PRO</span>
+      </div>
+      <div class="sb-item locked" onclick="showPremium()">
+        <span class="sb-item-icon">📈</span>
+        <span class="sb-item-txt">İlerleme Takibi</span>
+        <span class="premium-tag">PRO</span>
+      </div>
+      <div class="sb-item locked" onclick="showPremium()">
+        <span class="sb-item-icon">👥</span>
+        <span class="sb-item-txt">Arkadaşlar</span>
+        <span class="premium-tag">PRO</span>
+      </div>
+      <div class="sb-item locked" onclick="showPremium()">
+        <span class="sb-item-icon">🎯</span>
+        <span class="sb-item-txt">Hedef Takibi</span>
+        <span class="premium-tag">PRO</span>
+      </div>
+    </div>
+    <div class="sb-section">
+      <div class="sb-section-lbl">Hesap</div>
+      <div class="sb-item" onclick="showSection('profile')">
+        <span class="sb-item-icon">👤</span>
+        <span class="sb-item-txt">Kişisel Bilgiler</span>
+      </div>
+      <div class="sb-item" onclick="showSection('settings')">
+        <span class="sb-item-icon">⚙️</span>
+        <span class="sb-item-txt">Ayarlar</span>
+      </div>
+      <div class="sb-item" onclick="goLanding()">
+        <span class="sb-item-icon">🚪</span>
+        <span class="sb-item-txt">Çıkış</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="main-content" id="mainContent">
+
+    <!-- AI PROGRAM SECTION -->
+    <div id="section-program">
+      <div class="sec-eye">// AI Destekli Analiz</div>
+      <h2 class="sec-title">Kişisel <em>Programın</em></h2>
+      <p class="sec-sub">Bilgilerini gir, yapay zeka sana özel program hazırlasın.</p>
+
+      <!-- MODE SELECT -->
+      <div id="modeSelect">
+        <div class="choice-wrap" style="justify-content:flex-start;opacity:1;animation:none;margin-bottom:32px;">
+          <div class="choice-card individual" id="mFoto" style="width:220px;padding:24px 20px;">
+            <span class="cc-icon" style="font-size:1.5rem">📷</span>
+            <div class="cc-title" style="font-size:1rem">Fotoğraf ile</div>
+            <div class="cc-sub" style="font-size:0.75rem;margin-bottom:12px">AI görsel analiz yapar</div>
+          </div>
+          <div class="choice-card salon" id="mOlcu" style="width:220px;padding:24px 20px;">
+            <span class="cc-icon" style="font-size:1.5rem">📏</span>
+            <div class="cc-title" style="font-size:1rem">Ölçülerle</div>
+            <div class="cc-sub" style="font-size:0.75rem;margin-bottom:12px">Veri bazlı program</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FORM AREA -->
+      <div id="formArea" style="display:none">
+        <div class="prog-wrap">
+          <div class="ps active" id="ps0"><div class="pn">01</div><div class="pl">Fizik</div></div>
+          <div class="pline" id="pl0"></div>
+          <div class="ps" id="ps1"><div class="pn">02</div><div class="pl">Hedefler</div></div>
+          <div class="pline" id="pl1"></div>
+          <div class="ps" id="ps2"><div class="pn">03</div><div class="pl" id="step3lbl">Analiz</div></div>
+        </div>
+
+        <!-- PANEL 0 -->
+        <div class="spanel active" id="p0">
+          <div class="gc">
+            <div class="fl" style="margin-bottom:18px">Temel Bilgiler</div>
+            <div class="fgrid">
+              <div class="fw"><div class="fl">Yaş</div><div class="fiw"><input type="number" id="age" placeholder="25"><span class="fu">YAŞ</span></div></div>
+              <div class="fw"><div class="fl">Boy</div><div class="fiw"><input type="number" id="height" placeholder="178"><span class="fu">CM</span></div></div>
+              <div class="fw"><div class="fl">Kilo</div><div class="fiw"><input type="number" id="weight" placeholder="75"><span class="fu">KG</span></div></div>
+              <div class="fw"><div class="fl">Vücut Yağ %</div><div class="fiw"><input type="number" id="bodyfat" placeholder="18"><span class="fu">%</span></div></div>
+            </div>
+          </div>
+          <div class="gc">
+            <div class="fl" style="margin-bottom:16px">Cinsiyet</div>
+            <div class="sgrid" style="grid-template-columns:1fr 1fr">
+              <button class="sbtn" data-g="gender" data-v="erkek"><span class="sico">♂</span>Erkek</button>
+              <button class="sbtn" data-g="gender" data-v="kadın"><span class="sico">♀</span>Kadın</button>
+            </div>
+          </div>
+          <div class="gc">
+            <div class="fl" style="margin-bottom:12px">Sağlık Kısıtlaması <span style="opacity:.4;font-style:italic">(opsiyonel)</span></div>
+            <div class="fiw"><input type="text" id="injury" placeholder="Diz sorunu, bel fıtığı..."></div>
+          </div>
+          <div class="nav-row"><div></div><button class="bnext" id="btn0">Devam Et →</button></div>
+        </div>
+
+        <!-- PANEL 1 -->
+        <div class="spanel" id="p1">
+          <div class="gc">
+            <div class="fl" style="margin-bottom:16px">Ana Hedef</div>
+            <div class="sgrid">
+              <button class="sbtn" data-g="goal" data-v="estetik kas geliştirme"><span class="sico">🏛</span>Estetik<div class="ssub">Klasik Fizik</div></button>
+              <button class="sbtn" data-g="goal" data-v="yağ yakma"><span class="sico">🔥</span>Yağ Yakma<div class="ssub">Kesim</div></button>
+              <button class="sbtn" data-g="goal" data-v="hacim ve güç"><span class="sico">⚡</span>Hacim & Güç<div class="ssub">Bulk</div></button>
+              <button class="sbtn" data-g="goal" data-v="genel form"><span class="sico">🎯</span>Genel Form<div class="ssub">Kondisyon</div></button>
+            </div>
+          </div>
+          <div class="gc">
+            <div class="fl" style="margin-bottom:16px">Öncelikli Kas Grupları</div>
+            <div class="mwrap">
+              <button class="mchip" data-v="omuzlar">Omuzlar</button>
+              <button class="mchip" data-v="göğüs">Göğüs</button>
+              <button class="mchip" data-v="sırt">Sırt</button>
+              <button class="mchip" data-v="biceps">Biceps</button>
+              <button class="mchip" data-v="triceps">Triceps</button>
+              <button class="mchip" data-v="karın">Karın</button>
+              <button class="mchip" data-v="bacak ön">Bacak Ön</button>
+              <button class="mchip" data-v="bacak arka">Bacak Arka</button>
+              <button class="mchip" data-v="kalça">Kalça</button>
+              <button class="mchip" data-v="baldır">Baldır</button>
+              <button class="mchip" data-v="ön kol">Ön Kol</button>
+              <button class="mchip" data-v="trapez">Trapez</button>
+            </div>
+          </div>
+          <div class="gc">
+            <div class="fl" style="margin-bottom:16px">Haftalık Antrenman Günü</div>
+            <div class="sgrid" style="grid-template-columns:repeat(4,1fr)">
+              <button class="sbtn" data-g="days" data-v="3"><span class="sico" style="font-size:1.6rem;font-family:'Playfair Display',serif;font-weight:600">3</span>Gün</button>
+              <button class="sbtn" data-g="days" data-v="4"><span class="sico" style="font-size:1.6rem;font-family:'Playfair Display',serif;font-weight:600">4</span>Gün</button>
+              <button class="sbtn" data-g="days" data-v="5"><span class="sico" style="font-size:1.6rem;font-family:'Playfair Display',serif;font-weight:600">5</span>Gün</button>
+              <button class="sbtn" data-g="days" data-v="6"><span class="sico" style="font-size:1.6rem;font-family:'Playfair Display',serif;font-weight:600">6</span>Gün</button>
+            </div>
+          </div>
+          <div class="gc">
+            <div class="fl" style="margin-bottom:16px">Tecrübe Seviyesi</div>
+            <div class="sgrid">
+              <button class="sbtn" data-g="level" data-v="başlangıç"><span class="sico">🌱</span>Başlangıç<div class="ssub">0–6 ay</div></button>
+              <button class="sbtn" data-g="level" data-v="orta"><span class="sico">⚙️</span>Orta<div class="ssub">6 ay–2 yıl</div></button>
+              <button class="sbtn" data-g="level" data-v="ileri"><span class="sico">🔱</span>İleri<div class="ssub">2+ yıl</div></button>
+            </div>
+          </div>
+          <div class="nav-row">
+            <button class="bprev" id="btn1p">← Geri</button>
+            <button class="bnext" id="btn1">Devam Et →</button>
+          </div>
+        </div>
+
+        <!-- PANEL 2 FOTO -->
+        <div class="spanel" id="p2foto">
+          <div class="gc">
+            <div class="fl" style="margin-bottom:16px">Fotoğraf Yükle</div>
+            <div class="consent-box">
+              <div class="consent-inner">
+                <input type="checkbox" id="photoConsent">
+                <div class="consent-txt">Yüklediğim fotoğraflar yalnızca AI analizi için kullanılır, sunucuda saklanmaz ve üçüncü taraflarla paylaşılmaz. <a href="#">KVKK Aydınlatma Metni</a>'ni okudum, onaylıyorum.</div>
+              </div>
+            </div>
+            <div class="uzone" id="uzone"><div class="uib">📷</div><div class="utit">Fotoğraf Yükle</div><div class="usub"><strong>Tıkla veya sürükle</strong> — Önden, yandan, arkadan. Maks. 3 fotoğraf.</div></div>
+            <input type="file" id="fileInput" accept="image/*" multiple>
+            <div class="pstrip" id="pstrip"></div>
+          </div>
+          <div class="nav-row">
+            <button class="bprev" id="btn2fp">← Geri</button>
+            <button class="bnext" id="btn2fa" style="padding:14px 44px" disabled>Analiz Et ✦</button>
+          </div>
+        </div>
+
+        <!-- PANEL 2 ÖLÇÜ -->
+        <div class="spanel" id="p2olcu">
+          <div class="gc">
+            <div class="fl" style="margin-bottom:16px">Vücut Ölçüleri <span style="opacity:.4;font-style:italic">(boş bırakabilirsin)</span></div>
+            <div class="fgrid">
+              <div class="fw"><div class="fl">Göğüs</div><div class="fiw"><input type="number" id="mc" placeholder="95"><span class="fu">CM</span></div></div>
+              <div class="fw"><div class="fl">Bel</div><div class="fiw"><input type="number" id="mw" placeholder="80"><span class="fu">CM</span></div></div>
+              <div class="fw"><div class="fl">Kalça</div><div class="fiw"><input type="number" id="mh" placeholder="90"><span class="fu">CM</span></div></div>
+              <div class="fw"><div class="fl">Omuz</div><div class="fiw"><input type="number" id="ms" placeholder="44"><span class="fu">CM</span></div></div>
+              <div class="fw"><div class="fl">Biceps</div><div class="fiw"><input type="number" id="mb" placeholder="36"><span class="fu">CM</span></div></div>
+              <div class="fw"><div class="fl">Uyluk</div><div class="fiw"><input type="number" id="mt" placeholder="54"><span class="fu">CM</span></div></div>
+            </div>
+          </div>
+          <div class="nav-row">
+            <button class="bprev" id="btn2op">← Geri</button>
+            <button class="bnext" id="btn2oa" style="padding:14px 44px">Analiz Et ✦</button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- RESULT -->
+      <div id="resultSection" style="display:none">
+        <div style="display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-bottom:32px;padding-bottom:24px;border-bottom:1px solid var(--border)">
+          <div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:0.55rem;letter-spacing:4px;color:var(--gold);text-transform:uppercase;margin-bottom:8px">// Programın Hazır</div>
+            <div style="font-family:'Playfair Display',serif;font-size:2.2rem;font-weight:500">Senin <em style="font-style:italic;color:var(--gold)">Özel</em> Programın</div>
+          </div>
+          <div style="display:flex;gap:24px" id="rstats"></div>
+        </div>
+        <div class="rbody" id="rbody"></div>
+        <button class="bprev" style="margin-top:20px" id="btnReset">↺  Yeni Analiz</button>
+      </div>
+    </div>
+
+    <!-- REPORT SECTION -->
+    <div id="section-report" style="display:none">
+      <div class="sec-eye">// Aktivitelerim</div>
+      <h2 class="sec-title">Raporla<em>rım</em></h2>
+      <p class="sec-sub">Kullanım geçmişin ve istatistiklerin.</p>
+      <div class="report-grid">
+        <div class="rcard"><div class="rcard-num">0</div><div class="rcard-lbl">Toplam Program</div></div>
+        <div class="rcard"><div class="rcard-num">0</div><div class="rcard-lbl">Bu Ay</div></div>
+        <div class="rcard"><div class="rcard-num">—</div><div class="rcard-lbl">Son Program</div></div>
+      </div>
+      <div class="gc" style="text-align:center;padding:48px">
+        <div style="font-size:1.5rem;margin-bottom:12px">📊</div>
+        <div style="font-family:'Playfair Display',serif;font-size:1.1rem;font-style:italic;margin-bottom:8px">Henüz program almadın</div>
+        <div style="font-size:0.8rem;color:var(--muted)">İlk programını al, istatistiklerin burada görünsün.</div>
+      </div>
+
+      <!-- PREMIUM LOCKED SECTIONS -->
+      <div class="gc premium-lock" style="margin-top:16px">
+        <div style="filter:blur(3px);pointer-events:none">
+          <div class="fl" style="margin-bottom:12px">Haftalık İlerleme Grafiği</div>
+          <div style="height:120px;background:rgba(255,255,255,0.02);border:1px solid var(--border)"></div>
+        </div>
+        <div class="lock-overlay">
+          <div class="lock-icon-big">🔒</div>
+          <div class="lock-msg">Premium özellik</div>
+          <button class="lock-btn" onclick="showPremium()">Premium'a Geç</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROFILE SECTION -->
+    <div id="section-profile" style="display:none">
+      <div class="sec-eye">// Hesabım</div>
+      <h2 class="sec-title">Kişisel <em>Bilgiler</em></h2>
+      <p class="sec-sub">Hesap bilgilerini buradan yönetebilirsin.</p>
+      <div class="gc">
+        <div class="fgrid">
+          <div class="fw"><div class="fl">Ad Soyad</div><div class="fiw"><input type="text" placeholder="Adın Soyadın"></div></div>
+          <div class="fw"><div class="fl">E-posta</div><div class="fiw"><input type="email" placeholder="email@example.com"></div></div>
+          <div class="fw"><div class="fl">Telefon</div><div class="fiw"><input type="tel" placeholder="+90 555 000 00 00"></div></div>
+          <div class="fw"><div class="fl">Şehir</div><div class="fiw"><input type="text" placeholder="Adana"></div></div>
+        </div>
+      </div>
+      <div style="text-align:right;margin-top:16px">
+        <button class="bnext" style="padding:12px 32px">Kaydet</button>
+      </div>
+    </div>
+
+    <!-- SETTINGS SECTION -->
+    <div id="section-settings" style="display:none">
+      <div class="sec-eye">// Tercihlerim</div>
+      <h2 class="sec-title">Ayar<em>lar</em></h2>
+      <p class="sec-sub">Bildirim ve gizlilik tercihlerini yönet.</p>
+      <div class="gc">
+        <div class="fl" style="margin-bottom:20px">Bildirimler</div>
+        <div style="display:flex;flex-direction:column;gap:16px">
+          <div style="display:flex;align-items:center;justify-content:space-between">
+            <span style="font-size:0.85rem;color:var(--muted)">Program hatırlatıcı</span>
+            <input type="checkbox" style="accent-color:var(--gold)" checked>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between">
+            <span style="font-size:0.85rem;color:var(--muted)">Yeni özellik bildirimi</span>
+            <input type="checkbox" style="accent-color:var(--gold)">
+          </div>
+        </div>
+      </div>
+      <div class="gc">
+        <div class="fl" style="margin-bottom:16px">Hesap İşlemleri</div>
+        <button class="bprev" style="color:var(--red);border-color:var(--red)">Hesabı Sil</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- SALON PAGE -->
+<div class="page" id="salonPage">
+  <div class="main-content" style="padding-top:100px">
+    <button class="bprev" style="margin-bottom:32px" id="backFromSalon">← Ana Sayfa</button>
+    <div class="sec-eye">// Kayıtlı Salonlar</div>
+    <h2 class="sec-title">Salonunu <em>Seç</em></h2>
+    <p class="sec-sub">Üye olduğun salonu seç, o salona özel AI programını al.</p>
+    <div class="salon-grid">
+      <div class="scard" id="goChangFit">
+        <div class="sc-num">01</div>
+        <div class="sc-name">Change Fitness</div>
+        <div class="sc-city">📍 Adana · Since 2020</div>
+        <div class="sc-tags"><span class="sc-tag">AKTİF</span><span class="sc-tag">AI DESTEKLI</span></div>
+        <div class="sc-enter">Giriş Yap →</div>
+      </div>
+      <div class="scard soon">
+        <div class="sc-num">02</div>
+        <div class="sc-name">Mega Gym</div>
+        <div class="sc-city">📍 İstanbul</div>
+        <div class="sc-tags"><span class="sc-tag" style="color:var(--muted);border-color:var(--border)">YAKINDA</span></div>
+        <div class="sc-enter" style="color:var(--muted)">Çok Yakında</div>
+      </div>
+      <div class="scard soon">
+        <div class="sc-num">03</div>
+        <div class="sc-name">FitLife</div>
+        <div class="sc-city">📍 Ankara</div>
+        <div class="sc-tags"><span class="sc-tag" style="color:var(--muted);border-color:var(--border)">YAKINDA</span></div>
+        <div class="sc-enter" style="color:var(--muted)">Çok Yakında</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CHANG FITNESS PAGE (same as individual but branded) -->
+<div class="page" id="changPage">
+  <div class="sidebar-toggle" id="changSidebarToggle">☰</div>
+  <div class="sidebar" id="changSidebar">
+    <div class="sb-logo">
+      <div class="sb-logo-txt" style="color:var(--gold)">CHANGE FITNESS</div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:0.5rem;letter-spacing:2px;color:var(--muted);margin-top:4px">BENES AI SİSTEMİ</div>
+    </div>
+    <div class="sb-section">
+      <div class="sb-section-lbl">Program</div>
+      <div class="sb-item active" id="cSbProgram" onclick="changSection('program')">
+        <span class="sb-item-icon">💪</span>
+        <span class="sb-item-txt">Program Al</span>
+      </div>
+      <div class="sb-item" id="cSbBeslenme" onclick="changSection('beslenme')">
+        <span class="sb-item-icon">🥗</span>
+        <span class="sb-item-txt">Beslenme Planı</span>
+      </div>
+      <div class="sb-item" id="cSbRapor" onclick="changSection('rapor')">
+        <span class="sb-item-icon">📊</span>
+        <span class="sb-item-txt">Raporlarım</span>
+      </div>
+      <div class="sb-item" id="cSbIlerleme" onclick="changSection('ilerleme')">
+        <span class="sb-item-icon">📈</span>
+        <span class="sb-item-txt">İlerleme Takibi</span>
+      </div>
+      <div class="sb-item" id="cSbArkadas" onclick="changSection('arkadas')">
+        <span class="sb-item-icon">👥</span>
+        <span class="sb-item-txt">Salon Arkadaşları</span>
+      </div>
+    </div>
+    <div class="sb-section">
+      <div class="sb-section-lbl">Hesap</div>
+      <div class="sb-item" id="cSbProfil" onclick="changSection('profil')">
+        <span class="sb-item-icon">👤</span>
+        <span class="sb-item-txt">Profilim</span>
+      </div>
+      <div class="sb-item" id="cSbAyarlar" onclick="changSection('ayarlar')">
+        <span class="sb-item-icon">⚙️</span>
+        <span class="sb-item-txt">Ayarlar</span>
+      </div>
+      <div class="sb-item" onclick="showPage('salonPage')">
+        <span class="sb-item-icon">🚪</span>
+        <span class="sb-item-txt">Çıkış</span>
+      </div>
+    </div>
+  </div>
+  <div class="main-content" id="changMainContent">
+
+    <!-- PROGRAM SECTION -->
+    <div id="cSection-program">
+      <div class="sec-eye">// Change Fitness · Kişisel Program</div>
+      <h2 class="sec-title">Programını <em>Al</em></h2>
+      <p class="sec-sub">Fotoğraf veya vücut ölçülerinle 2 dakikada kişisel antrenman programı.</p>
+      <div id="cModeSelect">
+        <div class="choice-wrap" style="justify-content:flex-start;opacity:1;animation:none;margin-bottom:32px">
+          <div class="choice-card salon" id="cMFoto" style="width:220px;padding:24px 20px">
+            <span class="cc-icon" style="font-size:1.5rem">📷</span>
+            <div class="cc-title" style="font-size:1rem">Fotoğraf ile</div>
+            <div class="cc-sub" style="font-size:0.75rem;margin-bottom:12px">AI görsel analiz yapar</div>
+          </div>
+          <div class="choice-card salon" id="cMOlcu" style="width:220px;padding:24px 20px">
+            <span class="cc-icon" style="font-size:1.5rem">📏</span>
+            <div class="cc-title" style="font-size:1rem">Ölçülerle</div>
+            <div class="cc-sub" style="font-size:0.75rem;margin-bottom:12px">Veri bazlı program</div>
+          </div>
+        </div>
+      </div>
+      <div id="cFormArea" style="display:none">
+        <div class="prog-wrap">
+          <div class="ps active" id="cps0"><div class="pn">01</div><div class="pl">Fizik</div></div>
+          <div class="pline" id="cpl0"></div>
+          <div class="ps" id="cps1"><div class="pn">02</div><div class="pl">Hedefler</div></div>
+          <div class="pline" id="cpl1"></div>
+          <div class="ps" id="cps2"><div class="pn">03</div><div class="pl" id="cstep3lbl">Analiz</div></div>
+        </div>
+        <div class="spanel active" id="cp0">
+          <div class="gc">
+            <div class="fgrid">
+              <div class="fw"><div class="fl">Yaş</div><div class="fiw"><input type="number" id="cage" placeholder="25"><span class="fu">YAŞ</span></div></div>
+              <div class="fw"><div class="fl">Boy</div><div class="fiw"><input type="number" id="cheight" placeholder="178"><span class="fu">CM</span></div></div>
+              <div class="fw"><div class="fl">Kilo</div><div class="fiw"><input type="number" id="cweight" placeholder="75"><span class="fu">KG</span></div></div>
+              <div class="fw"><div class="fl">Vücut Yağ %</div><div class="fiw"><input type="number" id="cbodyfat" placeholder="18"><span class="fu">%</span></div></div>
+            </div>
+          </div>
+          <div class="gc">
+            <div class="fl" style="margin-bottom:16px">Cinsiyet</div>
+            <div class="sgrid" style="grid-template-columns:1fr 1fr">
+              <button class="sbtn" data-g="cgender" data-v="erkek"><span class="sico">♂</span>Erkek</button>
+              <button class="sbtn" data-g="cgender" data-v="kadın"><span class="sico">♀</span>Kadın</button>
+            </div>
+          </div>
+          <div class="gc">
+            <div class="fl" style="margin-bottom:12px">Sağlık Kısıtlaması <span style="opacity:.4;font-style:italic">(opsiyonel)</span></div>
+            <div class="fiw"><input type="text" id="cinjury" placeholder="Diz sorunu, bel fıtığı..."></div>
+          </div>
+          <div class="nav-row"><div></div><button class="bnext" id="cbtn0">Devam Et →</button></div>
+        </div>
+        <div class="spanel" id="cp1">
+          <div class="gc">
+            <div class="fl" style="margin-bottom:16px">Ana Hedef</div>
+            <div class="sgrid">
+              <button class="sbtn" data-g="cgoal" data-v="estetik kas geliştirme"><span class="sico">🏛</span>Estetik<div class="ssub">Klasik Fizik</div></button>
+              <button class="sbtn" data-g="cgoal" data-v="yağ yakma"><span class="sico">🔥</span>Yağ Yakma<div class="ssub">Kesim</div></button>
+              <button class="sbtn" data-g="cgoal" data-v="hacim ve güç"><span class="sico">⚡</span>Hacim & Güç<div class="ssub">Bulk</div></button>
+              <button class="sbtn" data-g="cgoal" data-v="genel form"><span class="sico">🎯</span>Genel Form<div class="ssub">Kondisyon</div></button>
+            </div>
+          </div>
+          <div class="gc">
+            <div class="fl" style="margin-bottom:16px">Öncelikli Kas Grupları</div>
+            <div class="mwrap">
+              <button class="mchip" data-g="cmuscle" data-v="omuzlar">Omuzlar</button>
+              <button class="mchip" data-g="cmuscle" data-v="göğüs">Göğüs</button>
+              <button class="mchip" data-g="cmuscle" data-v="sırt">Sırt</button>
+              <button class="mchip" data-g="cmuscle" data-v="biceps">Biceps</button>
+              <button class="mchip" data-g="cmuscle" data-v="triceps">Triceps</button>
+              <button class="mchip" data-g="cmuscle" data-v="karın">Karın</button>
+              <button class="mchip" data-g="cmuscle" data-v="bacak ön">Bacak Ön</button>
+              <button class="mchip" data-g="cmuscle" data-v="bacak arka">Bacak Arka</button>
+              <button class="mchip" data-g="cmuscle" data-v="kalça">Kalça</button>
+              <button class="mchip" data-g="cmuscle" data-v="baldır">Baldır</button>
+              <button class="mchip" data-g="cmuscle" data-v="ön kol">Ön Kol</button>
+              <button class="mchip" data-g="cmuscle" data-v="trapez">Trapez</button>
+            </div>
+          </div>
+          <div class="gc">
+            <div class="fl" style="margin-bottom:16px">Haftalık Antrenman Günü</div>
+            <div class="sgrid" style="grid-template-columns:repeat(4,1fr)">
+              <button class="sbtn" data-g="cdays" data-v="3"><span class="sico" style="font-size:1.6rem;font-weight:600">3</span>Gün</button>
+              <button class="sbtn" data-g="cdays" data-v="4"><span class="sico" style="font-size:1.6rem;font-weight:600">4</span>Gün</button>
+              <button class="sbtn" data-g="cdays" data-v="5"><span class="sico" style="font-size:1.6rem;font-weight:600">5</span>Gün</button>
+              <button class="sbtn" data-g="cdays" data-v="6"><span class="sico" style="font-size:1.6rem;font-weight:600">6</span>Gün</button>
+            </div>
+          </div>
+          <div class="gc">
+            <div class="fl" style="margin-bottom:16px">Tecrübe Seviyesi</div>
+            <div class="sgrid">
+              <button class="sbtn" data-g="clevel" data-v="başlangıç"><span class="sico">🌱</span>Başlangıç<div class="ssub">0–6 ay</div></button>
+              <button class="sbtn" data-g="clevel" data-v="orta"><span class="sico">⚙️</span>Orta<div class="ssub">6 ay–2 yıl</div></button>
+              <button class="sbtn" data-g="clevel" data-v="ileri"><span class="sico">🔱</span>İleri<div class="ssub">2+ yıl</div></button>
+            </div>
+          </div>
+          <div class="nav-row">
+            <button class="bprev" id="cbtn1p">← Geri</button>
+            <button class="bnext" id="cbtn1">Devam Et →</button>
+          </div>
+        </div>
+        <div class="spanel" id="cp2foto">
+          <div class="gc">
+            <div class="consent-box">
+              <div class="consent-inner">
+                <input type="checkbox" id="cPhotoConsent">
+                <div class="consent-txt">Yüklediğim fotoğraflar yalnızca AI analizi için kullanılır, saklanmaz ve paylaşılmaz.</div>
+              </div>
+            </div>
+            <div class="uzone" id="cUzone"><div class="uib">📷</div><div class="utit">Fotoğraf Yükle</div><div class="usub"><strong>Tıkla veya sürükle</strong> — Maks. 3 fotoğraf</div></div>
+            <input type="file" id="cFileInput" accept="image/*" multiple>
+            <div class="pstrip" id="cPstrip"></div>
+          </div>
+          <div class="nav-row">
+            <button class="bprev" id="cbtn2fp">← Geri</button>
+            <button class="bnext" id="cbtn2fa" style="padding:14px 44px" disabled>Analiz Et ✦</button>
+          </div>
+        </div>
+        <div class="spanel" id="cp2olcu">
+          <div class="gc">
+            <div class="fl" style="margin-bottom:16px">Vücut Ölçüleri <span style="opacity:.4;font-style:italic">(boş bırakabilirsin)</span></div>
+            <div class="fgrid">
+              <div class="fw"><div class="fl">Göğüs</div><div class="fiw"><input type="number" id="cmc" placeholder="95"><span class="fu">CM</span></div></div>
+              <div class="fw"><div class="fl">Bel</div><div class="fiw"><input type="number" id="cmw" placeholder="80"><span class="fu">CM</span></div></div>
+              <div class="fw"><div class="fl">Kalça</div><div class="fiw"><input type="number" id="cmh" placeholder="90"><span class="fu">CM</span></div></div>
+              <div class="fw"><div class="fl">Omuz</div><div class="fiw"><input type="number" id="cms" placeholder="44"><span class="fu">CM</span></div></div>
+              <div class="fw"><div class="fl">Biceps</div><div class="fiw"><input type="number" id="cmb" placeholder="36"><span class="fu">CM</span></div></div>
+              <div class="fw"><div class="fl">Uyluk</div><div class="fiw"><input type="number" id="cmt" placeholder="54"><span class="fu">CM</span></div></div>
+            </div>
+          </div>
+          <div class="nav-row">
+            <button class="bprev" id="cbtn2op">← Geri</button>
+            <button class="bnext" id="cbtn2oa" style="padding:14px 44px">Analiz Et ✦</button>
+          </div>
+        </div>
+      </div>
+      <div id="cResultSection" style="display:none">
+        <div style="display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-bottom:32px;padding-bottom:24px;border-bottom:1px solid var(--border)">
+          <div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:0.55rem;letter-spacing:4px;color:var(--gold);text-transform:uppercase;margin-bottom:8px">// Change Fitness · Kişisel Programın</div>
+            <div style="font-family:'Playfair Display',serif;font-size:2.2rem;font-weight:500">Senin <em style="font-style:italic;color:var(--gold)">Özel</em> Programın</div>
+          </div>
+          <div style="display:flex;gap:24px" id="cRstats"></div>
+        </div>
+        <div class="rbody" id="cRbody"></div>
+        <button class="bprev" style="margin-top:20px" id="cBtnReset">↺  Yeni Analiz</button>
+      </div>
+    </div>
+
+    <!-- BESLENME SECTION -->
+    <div id="cSection-beslenme" style="display:none">
+      <div class="sec-eye">// Change Fitness · Beslenme</div>
+      <h2 class="sec-title">Beslenme <em>Planın</em></h2>
+      <p class="sec-sub">Hedefine göre günlük kalori ve makro besin rehberi.</p>
+      <div class="report-grid">
+        <div class="rcard"><div class="rcard-num">—</div><div class="rcard-lbl">Günlük Kalori</div></div>
+        <div class="rcard"><div class="rcard-num">—</div><div class="rcard-lbl">Protein (g)</div></div>
+        <div class="rcard"><div class="rcard-num">—</div><div class="rcard-lbl">Karbonhidrat (g)</div></div>
+        <div class="rcard"><div class="rcard-num">—</div><div class="rcard-lbl">Yağ (g)</div></div>
+      </div>
+      <div class="gc" style="text-align:center;padding:48px">
+        <div style="font-size:1.5rem;margin-bottom:12px">🥗</div>
+        <div style="font-family:'Playfair Display',serif;font-size:1rem;font-style:italic;margin-bottom:8px">Önce program alman gerekiyor</div>
+        <div style="font-size:0.8rem;color:var(--muted)">Program aldıktan sonra beslenme planın otomatik oluşturulur.</div>
+        <button class="bnext" style="margin-top:24px;padding:12px 32px" onclick="changSection('program')">Program Al →</button>
+      </div>
+    </div>
+
+    <!-- RAPOR SECTION -->
+    <div id="cSection-rapor" style="display:none">
+      <div class="sec-eye">// Change Fitness · Raporlar</div>
+      <h2 class="sec-title">Raporla<em>rım</em></h2>
+      <p class="sec-sub">Program geçmişin ve kullanım istatistiklerin.</p>
+      <div class="report-grid">
+        <div class="rcard"><div class="rcard-num">0</div><div class="rcard-lbl">Toplam Program</div></div>
+        <div class="rcard"><div class="rcard-num">0</div><div class="rcard-lbl">Bu Ay</div></div>
+        <div class="rcard"><div class="rcard-num">0</div><div class="rcard-lbl">Aktif Gün</div></div>
+      </div>
+      <div class="gc" style="text-align:center;padding:48px">
+        <div style="font-size:1.5rem;margin-bottom:12px">📊</div>
+        <div style="font-family:'Playfair Display',serif;font-size:1rem;font-style:italic;margin-bottom:8px">Henüz program almadın</div>
+        <div style="font-size:0.8rem;color:var(--muted)">İlk programını al, istatistiklerin burada görünsün.</div>
+      </div>
+    </div>
+
+    <!-- İLERLEME SECTION -->
+    <div id="cSection-ilerleme" style="display:none">
+      <div class="sec-eye">// Change Fitness · İlerleme</div>
+      <h2 class="sec-title">İlerleme <em>Takibi</em></h2>
+      <p class="sec-sub">Vücut ölçülerini güncelle, gelişimini gör.</p>
+      <div class="report-grid">
+        <div class="rcard"><div class="rcard-num">—</div><div class="rcard-lbl">Başlangıç Kilosu</div></div>
+        <div class="rcard"><div class="rcard-num">—</div><div class="rcard-lbl">Güncel Kilo</div></div>
+        <div class="rcard"><div class="rcard-num">0</div><div class="rcard-lbl">Hafta</div></div>
+        <div class="rcard"><div class="rcard-num">—</div><div class="rcard-lbl">Değişim</div></div>
+      </div>
+      <div class="gc">
+        <div class="fl" style="margin-bottom:20px">Ölçü Güncelle</div>
+        <div class="fgrid">
+          <div class="fw"><div class="fl">Güncel Kilo</div><div class="fiw"><input type="number" placeholder="75"><span class="fu">KG</span></div></div>
+          <div class="fw"><div class="fl">Bel</div><div class="fiw"><input type="number" placeholder="80"><span class="fu">CM</span></div></div>
+          <div class="fw"><div class="fl">Göğüs</div><div class="fiw"><input type="number" placeholder="95"><span class="fu">CM</span></div></div>
+          <div class="fw"><div class="fl">Kol</div><div class="fiw"><input type="number" placeholder="36"><span class="fu">CM</span></div></div>
+        </div>
+        <div style="margin-top:20px"><button class="bnext" style="padding:12px 32px">Kaydet</button></div>
+      </div>
+    </div>
+
+    <!-- ARKADAŞ SECTION -->
+    <div id="cSection-arkadas" style="display:none">
+      <div class="sec-eye">// Change Fitness · Topluluk</div>
+      <h2 class="sec-title">Salon <em>Arkadaşları</em></h2>
+      <p class="sec-sub">Change Fitness üyeleriyle bağlan, birlikte antrenman yap.</p>
+      <div class="gc">
+        <div class="fl" style="margin-bottom:16px">Arkadaş Ara</div>
+        <div style="display:flex;gap:12px">
+          <div class="fiw" style="flex:1"><input type="text" placeholder="İsim veya e-posta..."></div>
+          <button class="bnext" style="padding:12px 24px;white-space:nowrap">Ara</button>
+        </div>
+      </div>
+      <div class="gc" style="text-align:center;padding:40px">
+        <div style="font-size:1.5rem;margin-bottom:12px">👥</div>
+        <div style="font-family:'Playfair Display',serif;font-size:1rem;font-style:italic;margin-bottom:8px">Henüz arkadaşın yok</div>
+        <div style="font-size:0.8rem;color:var(--muted)">Salon arkadaşlarını bul, programlarını karşılaştır.</div>
+      </div>
+    </div>
+
+    <!-- PROFİL SECTION -->
+    <div id="cSection-profil" style="display:none">
+      <div class="sec-eye">// Change Fitness · Profil</div>
+      <h2 class="sec-title">Kişisel <em>Bilgiler</em></h2>
+      <p class="sec-sub">Salon üyelik ve hesap bilgilerin.</p>
+      <div class="gc">
+        <div class="fgrid">
+          <div class="fw"><div class="fl">Ad Soyad</div><div class="fiw"><input type="text" placeholder="Adın Soyadın"></div></div>
+          <div class="fw"><div class="fl">E-posta</div><div class="fiw"><input type="email" placeholder="email@example.com"></div></div>
+          <div class="fw"><div class="fl">Telefon</div><div class="fiw"><input type="tel" placeholder="+90 555 000 00 00"></div></div>
+          <div class="fw"><div class="fl">Doğum Tarihi</div><div class="fiw"><input type="date"></div></div>
+        </div>
+      </div>
+      <div style="text-align:right;margin-top:16px"><button class="bnext" style="padding:12px 32px">Kaydet</button></div>
+    </div>
+
+    <!-- AYARLAR SECTION -->
+    <div id="cSection-ayarlar" style="display:none">
+      <div class="sec-eye">// Change Fitness · Ayarlar</div>
+      <h2 class="sec-title">Hesap <em>Ayarları</em></h2>
+      <p class="sec-sub">Bildirim ve gizlilik tercihlerini yönet.</p>
+      <div class="gc">
+        <div class="fl" style="margin-bottom:20px">Bildirimler</div>
+        <div style="display:flex;flex-direction:column;gap:16px">
+          <div style="display:flex;align-items:center;justify-content:space-between">
+            <div><div style="font-size:0.85rem;color:var(--white)">Program hatırlatıcı</div><div style="font-size:0.75rem;color:var(--muted)">Haftalık antrenman günü geldiğinde bildir</div></div>
+            <input type="checkbox" style="accent-color:var(--gold)" checked>
+          </div>
+          <div style="border-top:1px solid var(--border);padding-top:16px;display:flex;align-items:center;justify-content:space-between">
+            <div><div style="font-size:0.85rem;color:var(--white)">Salon duyuruları</div><div style="font-size:0.75rem;color:var(--muted)">Change Fitness duyuruları</div></div>
+            <input type="checkbox" style="accent-color:var(--gold)" checked>
+          </div>
+        </div>
+      </div>
+      <div class="gc">
+        <div class="fl" style="margin-bottom:16px">Gizlilik</div>
+        <div style="font-size:0.82rem;color:var(--muted);line-height:1.8;margin-bottom:16px">Verileriniz KVKK kapsamında korunmaktadır. Fotoğraflar analiz sonrası silinir.</div>
+        <button class="bprev" style="color:var(--red);border-color:var(--red);font-size:0.72rem">Hesabı Sil</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- PREMIUM MODAL -->
+<div class="modal-overlay" id="premiumModal">
+  <div class="modal">
+    <div class="modal-title">Benes <em>Premium</em></div>
+    <div class="modal-sub">Tüm özelliklere sınırsız erişim. İstediğin zaman iptal et.</div>
+    <div class="modal-price">₺79 <span>/ ay</span></div>
+    <div class="modal-features">
+      <div class="mf-item"><span class="mf-check">✓</span> Sınırsız AI program analizi</div>
+      <div class="mf-item"><span class="mf-check">✓</span> Kişisel beslenme planı</div>
+      <div class="mf-item"><span class="mf-check">✓</span> Haftalık ilerleme takibi</div>
+      <div class="mf-item"><span class="mf-check">✓</span> Arkadaş sistemi</div>
+      <div class="mf-item"><span class="mf-check">✓</span> Geçmiş programlar</div>
+      <div class="mf-item"><span class="mf-check">✓</span> Hedef takibi ve raporlar</div>
+      <div class="mf-item"><span class="mf-check">✓</span> Öncelikli destek</div>
+    </div>
+    <button class="modal-btn">Premium'a Geç — ₺79/ay</button>
+    <button class="modal-close" id="closeModal">Şimdi değil</button>
+  </div>
+</div>
+
+<!-- LOADING -->
+<div class="ld" id="ld">
+  <div class="spin"><svg viewBox="0 0 72 72" fill="none"><circle cx="36" cy="36" r="32" stroke="rgba(212,168,75,0.12)" stroke-width="1"/><path d="M36 4 A32 32 0 0 1 68 36" stroke="#d4a84b" stroke-width="1.5" stroke-linecap="round"/></svg><div class="spin-in"></div></div>
+  <div class="ltitle">Analiz Ediliyor</div>
+  <div class="lstatus" id="ltxt">VERİLER İŞLENİYOR</div>
+  <div class="lbar"></div>
+</div>
+
+<div class="etst" id="etst"></div>
+
+<script>
+var GK = 'OPENAI_KEY_HERE';
+var S = {gender:null,goal:null,level:null,days:null};
+var imgs = [];
+var mode = 'foto';
+var sidebarOpen = false;
+
+function $(id){return document.getElementById(id);}
+
+function showPage(id){
+  document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});
+  $(id).classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function goLanding(){showPage('landingPage');}
+
+// LANDING
+$('goIndividual').onclick = function(){showPage('individualPage');};
+$('goSalon').onclick = function(){showPage('salonPage');};
+$('backFromSalon').onclick = function(){showPage('landingPage');};
+$('goChangFit').onclick = function(){showPage('changPage');};
+$('cMFoto').onclick = function(){alert('Chang Fitness fotoğraf modu — API key ile aktif olacak!');};
+$('cMOlcu').onclick = function(){alert('Chang Fitness ölçü modu — API key ile aktif olacak!');};
+
+// SIDEBAR
+$('sidebarToggle').onclick = function(){
+  sidebarOpen = !sidebarOpen;
+  $('sidebar').classList.toggle('open', sidebarOpen);
+  $('mainContent').classList.toggle('shifted', sidebarOpen);
+};
+
+$('changSidebarToggle').onclick = function(){
+  $('changSidebar').classList.toggle('open');
+  $('changMainContent').classList.toggle('shifted');
+};
+
+// SECTIONS
+function showSection(name){
+  document.querySelectorAll('[id^="section-"]').forEach(function(el){el.style.display='none';});
+  $('section-'+name).style.display='block';
+  document.querySelectorAll('.sb-item').forEach(function(el){el.classList.remove('active');});
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// MODE SELECT
+$('mFoto').onclick = function(){startForm('foto');};
+$('mOlcu').onclick = function(){startForm('olcu');};
+
+function startForm(m){
+  mode = m;
+  $('modeSelect').style.display = 'none';
+  $('formArea').style.display = 'block';
+  $('step3lbl').textContent = m === 'foto' ? 'Fotoğraf' : 'Ölçüler';
+  setStep(0);
+}
+
+function setStep(n){
+  ['p0','p1','p2foto','p2olcu'].forEach(function(id){$(id).classList.remove('active');});
+  if(n===0) $('p0').classList.add('active');
+  if(n===1) $('p1').classList.add('active');
+  if(n===2) $(mode==='foto'?'p2foto':'p2olcu').classList.add('active');
+  for(var i=0;i<3;i++){
+    var s=$('ps'+i); s.classList.remove('active','done');
+    if(i<n) s.classList.add('done');
+    if(i===n) s.classList.add('active');
+    if(i<2){var ln=$('pl'+i); if(i<n) ln.classList.add('done'); else ln.classList.remove('done');}
+  }
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// SELECTORS
+document.querySelectorAll('.sbtn').forEach(function(b){
+  b.onclick = function(){
+    var g=this.getAttribute('data-g');
+    document.querySelectorAll('.sbtn[data-g="'+g+'"]').forEach(function(x){x.classList.remove('sel');});
+    this.classList.add('sel');
+    S[g]=this.getAttribute('data-v');
+  };
+});
+document.querySelectorAll('.mchip').forEach(function(b){
+  b.onclick=function(){this.classList.toggle('on');};
+});
+
+// BUTTONS
+$('btn0').onclick=function(){goNext(0);};
+$('btn1p').onclick=function(){setStep(0);};
+$('btn1').onclick=function(){goNext(1);};
+$('btn2fp').onclick=function(){setStep(1);};
+$('btn2op').onclick=function(){setStep(1);};
+$('btn2fa').onclick=analyze;
+$('btn2oa').onclick=analyze;
+$('btnReset').onclick=doReset;
+
+// PHOTO CONSENT
+$('photoConsent').onchange=function(){
+  $('btn2fa').disabled = !this.checked;
+};
+
+// UPLOAD
+$('uzone').onclick=function(){$('fileInput').click();};
+$('fileInput').onchange=function(e){
+  Array.from(e.target.files).slice(0,3-imgs.length).forEach(function(f){
+    var r=new FileReader();
+    r.onload=function(){imgs.push({base64:r.result.split(',')[1],type:f.type});renderPreviews();};
+    r.readAsDataURL(f);
+  });
+};
+$('uzone').ondragover=function(e){e.preventDefault();this.style.borderColor='rgba(212,168,75,0.5)';};
+$('uzone').ondragleave=function(){this.style.borderColor='';};
+$('uzone').ondrop=function(e){
+  e.preventDefault();this.style.borderColor='';
+  Array.from(e.dataTransfer.files).filter(function(f){return f.type.indexOf('image')===0;}).slice(0,3-imgs.length).forEach(function(f){
+    var r=new FileReader();
+    r.onload=function(){imgs.push({base64:r.result.split(',')[1],type:f.type});renderPreviews();};
+    r.readAsDataURL(f);
+  });
+};
+
+function renderPreviews(){
+  var s=$('pstrip');s.innerHTML='';
+  imgs.forEach(function(img,i){
+    var d=document.createElement('div');d.className='pthmb';
+    var im=document.createElement('img');im.src='data:'+img.type+';base64,'+img.base64;
+    var bt=document.createElement('button');bt.textContent='✕';
+    bt.onclick=function(){imgs.splice(i,1);renderPreviews();};
+    d.appendChild(im);d.appendChild(bt);s.appendChild(d);
+  });
+  $('uzone').classList.toggle('filled',imgs.length>0);
+}
+
+function goNext(step){if(chk(step))setStep(step+1);}
+
+function chk(step){
+  if(step===0){
+    if(!$('age').value) return err('Yaşını gir');
+    if(!$('height').value) return err('Boyunu gir');
+    if(!$('weight').value) return err('Kilonu gir');
+    if(!S.gender) return err('Cinsiyetini seç');
+  }
+  if(step===1){
+    if(!S.goal) return err('Hedefini seç');
+    if(!S.days) return err('Haftalık gün sayısını seç');
+    if(!S.level) return err('Tecrübe seviyeni seç');
+  }
+  return true;
+}
+
+function err(msg){
+  var t=$('etst');t.textContent='⚠  '+msg;t.style.display='block';
+  setTimeout(function(){t.style.display='none';},3200);
+  return false;
+}
+
+function analyze(){
+  var ld=$('ld'),ltxt=$('ltxt');
+  var msgs=['VERİLER İŞLENİYOR','VÜCUT TİPİ ANALİZ EDİLİYOR','PROGRAM OLUŞTURULUYOR','BESLENME HAZIRLANIYOR','SON RÖTUŞLAR'];
+  var mi=0;ld.classList.add('on');
+  var iv=setInterval(function(){mi=(mi+1)%msgs.length;ltxt.textContent=msgs[mi];},2000);
+
+  var age=$('age').value,height=$('height').value,weight=$('weight').value;
+  var bodyfat=$('bodyfat').value||'belirtilmedi';
+  var injury=$('injury').value||'yok';
+  var bmi=(parseFloat(weight)/Math.pow(parseFloat(height)/100,2)).toFixed(1);
+  var muscles=Array.from(document.querySelectorAll('.mchip.on')).map(function(b){return b.getAttribute('data-v');}).join(', ')||'genel denge';
+
+  var extra='';
+  if(mode==='olcu'){
+    extra='Vucut olculeri: Gogus '+($('mc').value||'-')+'cm, Bel '+($('mw').value||'-')+'cm, Kalca '+($('mh').value||'-')+'cm, Omuz '+($('ms').value||'-')+'cm, Biceps '+($('mb').value||'-')+'cm, Uyluk '+($('mt').value||'-')+'cm. ';
+  }
+
+  var photoNote=(mode==='foto'&&imgs.length>0)?'Fotograflari gorsel analiz ile degerlendir. ':'';
+  var prompt='Profesyonel AI antrenoru olarak Turkce, cok detayli, bilimsel ve kisisellestirilmis program hazirla. '+photoNote+
+    'Kullanici: Yas '+age+', Boy '+height+'cm, Kilo '+weight+'kg, Yag %'+bodyfat+', BMI '+bmi+'. '+
+    'Cinsiyet: '+S.gender+'. Tecrube: '+S.level+'. Hedef: '+S.goal+'. '+
+    'Oncelikli bolge: '+muscles+'. Haftalik: '+S.days+' gun. Saglik: '+injury+'. '+extra+
+    'Basliklar: # Kisisel Program, ## Fizik Degerlendirmesi, ## Haftalik Antrenman Plani (tablolarla), ## Beslenme Rehberi, ## Supplement Onerileri, ## 12 Haftalik Gelisim. Markdown ve tablo kullan.';
+
+  var messages = [{role:'user',content:prompt}];
+
+  fetch('https://api.openai.com/v1/chat/completions', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json','Authorization':'Bearer '+GK},
+    body: JSON.stringify({model:'gpt-4o-mini',messages:messages,max_tokens:3000,temperature:0.7})
+  }).then(function(r){return r.json();}).then(function(data){
+    clearInterval(iv);ld.classList.remove('on');
+    if(data.error){err('Hata: '+data.error.message);return;}
+    var text=data.choices[0].message.content;
+    var statsHtml = '<div style="text-align:right"><div style="font-size:1.4rem;color:var(--gold)">'+bmi+'</div><div style="font-size:0.48rem;color:var(--muted)">BMI</div></div>';
+    statsHtml += '<div style="text-align:right"><div style="font-size:1.4rem;color:var(--gold)">'+weight+'kg</div><div style="font-size:0.48rem;color:var(--muted)">KİLO</div></div>';
+    statsHtml += '<div style="text-align:right"><div style="font-size:1.4rem;color:var(--gold)">'+S.days+'g</div><div style="font-size:0.48rem;color:var(--muted)">PROGRAM</div></div>';
+    $('rstats').innerHTML = statsHtml;
+    $('rbody').innerHTML=mdToHtml(text);
+    $('formArea').style.display='none';
+    $('modeSelect').style.display='none';
+    $('resultSection').style.display='block';
+  }).catch(function(e){clearInterval(iv);ld.classList.remove('on');err('Bağlantı hatası.');});
+}
+
+function mdToHtml(text){
+  var lines=text.split('\n'),out=[],trows=[],inT=false;
+  for(var i=0;i<lines.length;i++){
+    var line=lines[i];
+    if(line.match(/^\|.+\|$/)){
+      inT=true;
+      var cells=line.replace(/^\|/,'').replace(/\|$/,'').split('|').map(function(c){return c.trim();});
+      if(!cells.every(function(c){return c.match(/^[-:]+$/);})) trows.push(cells);
+      continue;
+    }
+    if(inT){
+      inT=false;
+      if(trows.length>0){
+        var h='<tr>'+trows[0].map(function(c){return '<th>'+c+'</th>';}).join('')+'</tr>';
+        var b=trows.slice(1).map(function(row){return '<tr>'+row.map(function(c){return '<td>'+c+'</td>';}).join('')+'</tr>';}).join('');
+        out.push('<table><thead>'+h+'</thead><tbody>'+b+'</tbody></table>');
+        trows=[];
+      }
+    }
+    if(line.match(/^### /)){out.push('<h3>'+line.slice(4)+'</h3>');continue;}
+    if(line.match(/^## /)){out.push('<h2>'+line.slice(3)+'</h2>');continue;}
+    if(line.match(/^# /)){out.push('<h1>'+line.slice(2)+'</h1>');continue;}
+    if(line==='---'){out.push('<hr>');continue;}
+    if(line.match(/^- /)){out.push('<li>'+line.slice(2)+'</li>');continue;}
+    if(line.match(/^\d+\. /)){out.push('<li>'+line.replace(/^\d+\. /,'')+'</li>');continue;}
+    if(line.trim()===''){out.push('<br>');continue;}
+    out.push('<p>'+line+'</p>');
+  }
+  if(inT&&trows.length>0){
+    var h2='<tr>'+trows[0].map(function(c){return '<th>'+c+'</th>';}).join('')+'</tr>';
+    var b2=trows.slice(1).map(function(row){return '<tr>'+row.map(function(c){return '<td>'+c+'</td>';}).join('')+'</tr>';}).join('');
+    out.push('<table><thead>'+h2+'</thead><tbody>'+b2+'</tbody></table>');
+  }
+  var html=out.join('\n');
+  html=html.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>');
+  html=html.replace(/\*(.+?)\*/g,'<em>$1</em>');
+  return html;
+}
+
+function doReset(){
+  imgs=[];S.gender=S.goal=S.level=S.days=null;
+  document.querySelectorAll('.sbtn').forEach(function(b){b.classList.remove('sel');});
+  document.querySelectorAll('.mchip').forEach(function(b){b.classList.remove('on');});
+  $('pstrip').innerHTML='';$('uzone').classList.remove('filled');
+  $('photoConsent').checked=false;$('btn2fa').disabled=true;
+  ['age','height','weight','bodyfat','injury','mc','mw','mh','ms','mb','mt'].forEach(function(id){var el=$(id);if(el)el.value='';});
+  $('resultSection').style.display='none';
+  $('formArea').style.display='none';
+  $('modeSelect').style.display='block';
+}
+
+// PREMIUM MODAL
+function showPremium(){$('premiumModal').classList.add('show');}
+$('premiumHeaderBtn').onclick=showPremium;
+$('closeModal').onclick=function(){$('premiumModal').classList.remove('show');};
+$('premiumModal').onclick=function(e){if(e.target===this)this.classList.remove('show');};
+
+function showPrivacy(){alert('Gizlilik Politikası sayfası yakında eklenecek.');}
+
+// CHANG SECTION NAVIGATION
+var CS = {cgender:null,cgoal:null,clevel:null,cdays:null};
+var cImgs = [];
+var cMode = 'foto';
+
+function changSection(name){
+  ['program','beslenme','rapor','profil','ilerleme','arkadas','ayarlar'].forEach(function(s){
+    var el = $('cSection-'+s);
+    if(el) el.style.display='none';
+  });
+  $('cSection-'+name).style.display='block';
+  document.querySelectorAll('#changSidebar .sb-item').forEach(function(el){el.classList.remove('active');});
+  var activeEl = $('cSb'+name.charAt(0).toUpperCase()+name.slice(1));
+  if(activeEl) activeEl.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+$('changSidebarToggle').onclick = function(){
+  $('changSidebar').classList.toggle('open');
+  $('changMainContent').classList.toggle('shifted');
+};
+
+$('cMFoto').onclick = function(){cStartForm('foto');};
+$('cMOlcu').onclick = function(){cStartForm('olcu');};
+
+function cStartForm(m){
+  cMode = m;
+  $('cModeSelect').style.display='none';
+  $('cFormArea').style.display='block';
+  $('cstep3lbl').textContent = m==='foto'?'Fotoğraf':'Ölçüler';
+  cSetStep(0);
+}
+
+function cSetStep(n){
+  ['cp0','cp1','cp2foto','cp2olcu'].forEach(function(id){$(id).classList.remove('active');});
+  if(n===0) $('cp0').classList.add('active');
+  if(n===1) $('cp1').classList.add('active');
+  if(n===2) $(cMode==='foto'?'cp2foto':'cp2olcu').classList.add('active');
+  for(var i=0;i<3;i++){
+    var s=$('cps'+i); s.classList.remove('active','done');
+    if(i<n) s.classList.add('done');
+    if(i===n) s.classList.add('active');
+    if(i<2){var ln=$('cpl'+i); if(i<n) ln.classList.add('done'); else ln.classList.remove('done');}
+  }
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+$('cbtn0').onclick=function(){cGoNext(0);};
+$('cbtn1p').onclick=function(){cSetStep(0);};
+$('cbtn1').onclick=function(){cGoNext(1);};
+$('cbtn2fp').onclick=function(){cSetStep(1);};
+$('cbtn2op').onclick=function(){cSetStep(1);};
+$('cbtn2fa').onclick=cAnalyze;
+$('cbtn2oa').onclick=cAnalyze;
+$('cBtnReset').onclick=cReset;
+
+$('cPhotoConsent').onchange=function(){
+  $('cbtn2fa').disabled=!this.checked;
+};
+
+$('cUzone').onclick=function(){$('cFileInput').click();};
+$('cFileInput').onchange=function(e){
+  Array.from(e.target.files).slice(0,3-cImgs.length).forEach(function(f){
+    var r=new FileReader();
+    r.onload=function(){cImgs.push({base64:r.result.split(',')[1],type:f.type});cRenderPreviews();};
+    r.readAsDataURL(f);
+  });
+};
+
+function cRenderPreviews(){
+  var s=$('cPstrip');s.innerHTML='';
+  cImgs.forEach(function(img,i){
+    var d=document.createElement('div');d.className='pthmb';
+    var im=document.createElement('img');im.src='data:'+img.type+';base64,'+img.base64;
+    var bt=document.createElement('button');bt.textContent='✕';
+    bt.onclick=function(){cImgs.splice(i,1);cRenderPreviews();};
+    d.appendChild(im);d.appendChild(bt);s.appendChild(d);
+  });
+  $('cUzone').classList.toggle('filled',cImgs.length>0);
+}
+
+function cGoNext(step){if(cChk(step))cSetStep(step+1);}
+
+function cChk(step){
+  if(step===0){
+    if(!$('cage').value) return err('Yaşını gir');
+    if(!$('cheight').value) return err('Boyunu gir');
+    if(!$('cweight').value) return err('Kilonu gir');
+    if(!CS.cgender) return err('Cinsiyetini seç');
+  }
+  if(step===1){
+    if(!CS.cgoal) return err('Hedefini seç');
+    if(!CS.cdays) return err('Haftalık gün sayısını seç');
+    if(!CS.clevel) return err('Tecrübe seviyeni seç');
+  }
+  return true;
+}
+
+document.querySelectorAll('.sbtn[data-g^="c"]').forEach(function(b){
+  b.onclick=function(){
+    var g=this.getAttribute('data-g');
+    document.querySelectorAll('.sbtn[data-g="'+g+'"]').forEach(function(x){x.classList.remove('sel');});
+    this.classList.add('sel');
+    CS[g]=this.getAttribute('data-v');
+  };
+});
+
+document.querySelectorAll('.mchip[data-g="cmuscle"]').forEach(function(b){
+  b.onclick=function(){this.classList.toggle('on');};
+});
+
+function cAnalyze(){
+  var ld=$('ld'),ltxt=$('ltxt');
+  var msgs=['VERİLER İŞLENİYOR','VÜCUT TİPİ ANALİZ EDİLİYOR','PROGRAM OLUŞTURULUYOR','BESLENME HAZIRLANIYOR','SON RÖTUŞLAR'];
+  var mi=0;ld.classList.add('on');
+  var iv=setInterval(function(){mi=(mi+1)%msgs.length;ltxt.textContent=msgs[mi];},2000);
+
+  var age=$('cage').value,height=$('cheight').value,weight=$('cweight').value;
+  var bodyfat=$('cbodyfat').value||'belirtilmedi';
+  var injury=$('cinjury').value||'yok';
+  var bmi=(parseFloat(weight)/Math.pow(parseFloat(height)/100,2)).toFixed(1);
+  var muscles=Array.from(document.querySelectorAll('.mchip[data-g="cmuscle"].on')).map(function(b){return b.getAttribute('data-v');}).join(', ')||'genel denge';
+
+  var extra='';
+  if(cMode==='olcu'){
+    extra='Vucut olculeri: Gogus '+($('cmc').value||'-')+'cm, Bel '+($('cmw').value||'-')+'cm, Kalca '+($('cmh').value||'-')+'cm, Omuz '+($('cms').value||'-')+'cm, Biceps '+($('cmb').value||'-')+'cm, Uyluk '+($('cmt').value||'-')+'cm. ';
+  }
+
+  var photoNote=(cMode==='foto'&&cImgs.length>0)?'Fotograflari gorsel analiz ile degerlendir. ':'';
+  var prompt='Change Fitness icin AI antrenoru olarak Turkce, cok detayli, bilimsel ve kisisellestirilmis program hazirla. '+photoNote+
+    'Kullanici: Yas '+age+', Boy '+height+'cm, Kilo '+weight+'kg, Yag %'+bodyfat+', BMI '+bmi+'. '+
+    'Cinsiyet: '+CS.cgender+'. Tecrube: '+CS.clevel+'. Hedef: '+CS.cgoal+'. '+
+    'Oncelikli bolge: '+muscles+'. Haftalik: '+CS.cdays+' gun. Saglik: '+injury+'. '+extra+
+    'Basliklar: # Change Fitness Kisisel Program, ## Fizik Degerlendirmesi, ## Haftalik Antrenman Plani (tablolarla), ## Beslenme Rehberi, ## Supplement Onerileri, ## 12 Haftalik Gelisim. Markdown ve tablo kullan.';
+
+  // Photos not supported in this mode
+
+  fetch('https://api.openai.com/v1/chat/completions', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json','Authorization':'Bearer '+GK},
+    body: JSON.stringify({model:'gpt-4o-mini',messages:[{role:'user',content:prompt}],max_tokens:3000,temperature:0.7})
+  }).then(function(r){return r.json();}).then(function(data){
+    clearInterval(iv);ld.classList.remove('on');
+    if(data.error){err('Hata: '+data.error.message);return;}
+    var text=data.choices[0].message.content;
+    var ch = '<div style="text-align:right"><div style="font-size:1.4rem;color:var(--gold)">'+bmi+'</div><div style="font-size:0.48rem;color:var(--muted)">BMI</div></div>';
+    ch += '<div style="text-align:right"><div style="font-size:1.4rem;color:var(--gold)">'+weight+'kg</div><div style="font-size:0.48rem;color:var(--muted)">KİLO</div></div>';
+    ch += '<div style="text-align:right"><div style="font-size:1.4rem;color:var(--gold)">'+CS.cdays+'g</div><div style="font-size:0.48rem;color:var(--muted)">PROGRAM</div></div>';
+    $('cRstats').innerHTML = ch;
+    $('cRbody').innerHTML=mdToHtml(text);
+    $('cFormArea').style.display='none';
+    $('cResultSection').style.display='block';
+  }).catch(function(e){clearInterval(iv);ld.classList.remove('on');err('Bağlantı hatası.');});
+}
+
+function cReset(){
+  cImgs=[];CS.cgender=CS.cgoal=CS.clevel=CS.cdays=null;
+  document.querySelectorAll('.sbtn[data-g^="c"]').forEach(function(b){b.classList.remove('sel');});
+  document.querySelectorAll('.mchip[data-g="cmuscle"]').forEach(function(b){b.classList.remove('on');});
+  $('cPstrip').innerHTML='';$('cUzone').classList.remove('filled');
+  $('cPhotoConsent').checked=false;$('cbtn2fa').disabled=true;
+  ['cage','cheight','cweight','cbodyfat','cinjury','cmc','cmw','cmh','cms','cmb','cmt'].forEach(function(id){var el=$(id);if(el)el.value='';});
+  $('cResultSection').style.display='none';
+  $('cFormArea').style.display='none';
+  $('cModeSelect').style.display='block';
+}
+
+</script>
+</body>
+</html>
