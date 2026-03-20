@@ -26,7 +26,7 @@ body{background:var(--bg);color:var(--white);font-family:'Syne',sans-serif;min-h
 
 /* HEADER */
 header{position:fixed;top:0;left:0;right:0;z-index:100;height:68px;padding:0 48px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);background:rgba(8,16,31,0.88);backdrop-filter:blur(20px);}
-.logo{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:600;letter-spacing:4px;}
+.logo{font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:600;letter-spacing:4px;}
 .logo span{color:var(--gold);}
 .hright{display:flex;align-items:center;gap:16px;}
 .htag{font-family:'JetBrains Mono',monospace;font-size:0.57rem;letter-spacing:3px;color:var(--muted);text-transform:uppercase;}
@@ -304,7 +304,7 @@ footer{border-top:1px solid var(--border);padding:32px 48px;display:flex;align-i
   <div class="hright">
     <div class="htag">AI Fitness Platform</div>
     <div class="hst">AKTİF</div>
-    <button class="hbtn" id="premiumHeaderBtn">Premium Al</button>
+    <button class="hbtn" id="loginBtn">Giriş Yap</button>
   </div>
 </header>
 
@@ -337,6 +337,33 @@ footer{border-top:1px solid var(--border);padding:32px 48px;display:flex;align-i
         <div class="stat"><div class="stat-num">AI</div><div class="stat-lbl">Destekli Analiz</div></div>
         <div class="stat"><div class="stat-num">%100</div><div class="stat-lbl">Kişiselleştirilmiş</div></div>
         <div class="stat"><div class="stat-num">7/24</div><div class="stat-lbl">Erişim</div></div>
+      </div>
+      <div id="hakkimizda" style="padding:60px 0;border-top:1px solid var(--border);text-align:center;">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:0.58rem;letter-spacing:4px;color:var(--gold);text-transform:uppercase;margin-bottom:16px">// Benes Nedir?</div>
+        <div style="font-family:'Playfair Display',serif;font-size:2.8rem;font-weight:500;margin-bottom:20px">Türkiye'nin İlk <em style="font-style:italic;color:var(--gold)">AI Fitness</em> Platformu</div>
+        <p style="color:var(--muted);font-size:0.9rem;line-height:1.9;max-width:620px;margin:0 auto 40px;font-weight:300">Benes, yapay zeka teknolojisini spor dünyasıyla buluşturan yenilikçi bir platformdur. Fotoğrafın veya vücut ölçülerinle saniyeler içinde bilimsel, kişiselleştirilmiş antrenman ve beslenme programı alırsın. Spor salonları için özel entegrasyon ile üyelerine profesyonel hizmet sun.</p>
+        <div style="display:flex;gap:32px;justify-content:center;flex-wrap:wrap;">
+          <div style="text-align:center;padding:24px;background:rgba(255,255,255,0.025);border:1px solid var(--border);width:180px;">
+            <div style="font-size:1.8rem;margin-bottom:8px">🤖</div>
+            <div style="font-family:'Playfair Display',serif;font-size:0.95rem;margin-bottom:6px">Yapay Zeka</div>
+            <div style="font-size:0.75rem;color:var(--muted);line-height:1.6">GPT-4o destekli, bilimsel ve kişiselleştirilmiş program</div>
+          </div>
+          <div style="text-align:center;padding:24px;background:rgba(255,255,255,0.025);border:1px solid var(--border);width:180px;">
+            <div style="font-size:1.8rem;margin-bottom:8px">📸</div>
+            <div style="font-family:'Playfair Display',serif;font-size:0.95rem;margin-bottom:6px">Görsel Analiz</div>
+            <div style="font-size:0.75rem;color:var(--muted);line-height:1.6">3 fotoğraf yükle, AI vücudunu analiz etsin</div>
+          </div>
+          <div style="text-align:center;padding:24px;background:rgba(255,255,255,0.025);border:1px solid var(--border);width:180px;">
+            <div style="font-size:1.8rem;margin-bottom:8px">🏋️</div>
+            <div style="font-family:'Playfair Display',serif;font-size:0.95rem;margin-bottom:6px">Salonlara Özel</div>
+            <div style="font-size:0.75rem;color:var(--muted);line-height:1.6">Salonuna özel AI sistemi, tüm üyeler kullanır</div>
+          </div>
+          <div style="text-align:center;padding:24px;background:rgba(255,255,255,0.025);border:1px solid var(--border);width:180px;">
+            <div style="font-size:1.8rem;margin-bottom:8px">🇹🇷</div>
+            <div style="font-family:'Playfair Display',serif;font-size:0.95rem;margin-bottom:6px">Yerli Teknoloji</div>
+            <div style="font-size:0.75rem;color:var(--muted);line-height:1.6">BNS Bilişim altyapısıyla Adana'da doğdu</div>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -514,6 +541,17 @@ footer{border-top:1px solid var(--border);padding:32px 48px;display:flex;align-i
               <button class="sbtn" data-g="level" data-v="ileri"><span class="sico">🔱</span>İleri<div class="ssub">2+ yıl</div></button>
             </div>
           </div>
+          <div class="gc">
+            <div class="fl" style="margin-bottom:16px">Antrenman Yeri</div>
+            <div class="sgrid" style="grid-template-columns:1fr 1fr">
+              <button class="sbtn" data-g="location" data-v="spor salonu"><span class="sico">🏋️</span>Spor Salonu<div class="ssub">Alet ile</div></button>
+              <button class="sbtn" data-g="location" data-v="evde"><span class="sico">🏠</span>Evde<div class="ssub">Ekipman seç</div></button>
+            </div>
+          </div>
+          <div id="homeEquip" class="gc" style="display:none">
+            <div class="fl" style="margin-bottom:12px">Evdeki Ekipmanlar <span style="opacity:.4;font-style:italic">(varsa yaz)</span></div>
+            <div class="fiw"><input type="text" id="equipment" placeholder="Dumbbell 10kg, bant, bench press..."></div>
+          </div>
           <div class="nav-row">
             <button class="bprev" id="btn1p">← Geri</button>
             <button class="bnext" id="btn1">Devam Et →</button>
@@ -571,7 +609,10 @@ footer{border-top:1px solid var(--border);padding:32px 48px;display:flex;align-i
           <div style="display:flex;gap:24px" id="rstats"></div>
         </div>
         <div class="rbody" id="rbody"></div>
-        <button class="bprev" style="margin-top:20px" id="btnReset">↺  Yeni Analiz</button>
+        <div style="display:flex;gap:12px;margin-top:20px;flex-wrap:wrap">
+        <button class="bprev" id="btnReset">↺  Yeni Analiz</button>
+        <button class="bnext" style="padding:12px 28px;font-size:0.72rem" onclick="printProgram()">⬇  Yazdır / PDF</button>
+      </div>
       </div>
     </div>
 
@@ -874,7 +915,10 @@ footer{border-top:1px solid var(--border);padding:32px 48px;display:flex;align-i
           <div style="display:flex;gap:24px" id="cRstats"></div>
         </div>
         <div class="rbody" id="cRbody"></div>
-        <button class="bprev" style="margin-top:20px" id="cBtnReset">↺  Yeni Analiz</button>
+        <div style="display:flex;gap:12px;margin-top:20px;flex-wrap:wrap">
+        <button class="bprev" id="cBtnReset">↺  Yeni Analiz</button>
+        <button class="bnext" style="padding:12px 28px;font-size:0.72rem" onclick="printProgram()">⬇  Yazdır / PDF</button>
+      </div>
       </div>
     </div>
 
@@ -1000,6 +1044,36 @@ footer{border-top:1px solid var(--border);padding:32px 48px;display:flex;align-i
   </div>
 </div>
 
+<!-- SALON ŞİFRE MODAL -->
+<div class="modal-overlay" id="salonSifreModal">
+  <div class="modal" style="max-width:380px">
+    <div class="modal-title" style="font-size:1.4rem">Change <em>Fitness</em></div>
+    <div class="modal-sub">Üye girişi için salon şifrenizi girin.</div>
+    <div class="fw" style="margin-bottom:24px">
+      <div class="fl">Salon Şifresi</div>
+      <div class="fiw">
+        <input type="password" id="salonSifreInput" placeholder="••••••" style="width:100%;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-bottom:1px solid rgba(255,255,255,0.13);color:var(--white);padding:13px 14px;font-family:Syne,sans-serif;font-size:1.2rem;letter-spacing:8px;outline:none;border-radius:0;text-align:center;">
+      </div>
+    </div>
+    <button class="modal-btn" id="salonSifreBtn">Giriş Yap</button>
+    <button class="modal-close" id="salonSifreKapat">İptal</button>
+  </div>
+</div>
+
+<!-- LOGIN MODAL -->
+<div class="modal-overlay" id="loginModal">
+  <div class="modal">
+    <div class="modal-title">Benes'e <em>Hoş Geldin</em></div>
+    <div class="modal-sub">Hesabın varsa giriş yap, yoksa kayıt ol. Bilgilerin kaydedilir.</div>
+<p style="color:var(--muted);font-size:0.82rem;margin-bottom:24px;line-height:1.7">Gmail hesabınla tek tıkla giriş yap. Bilgilerin güvenle saklanır ve her cihazdan erişebilirsin.</p>
+    <button class="modal-btn" id="googleLoginBtn" onclick="window.firebaseLogin()" style="display:flex;align-items:center;justify-content:center;gap:12px;">
+      <svg width="18" height="18" viewBox="0 0 18 18"><path fill="#4285F4" d="M16.51 8H8.98v3h4.3c-.18 1-.74 1.48-1.6 2.04v2.01h2.6a7.8 7.8 0 0 0 2.38-5.88c0-.57-.05-.66-.15-1.18z"/><path fill="#34A853" d="M8.98 17c2.16 0 3.97-.72 5.3-1.94l-2.6-2a4.8 4.8 0 0 1-7.18-2.54H1.83v2.07A8 8 0 0 0 8.98 17z"/><path fill="#FBBC05" d="M4.5 10.52a4.8 4.8 0 0 1 0-3.04V5.41H1.83a8 8 0 0 0 0 7.18l2.67-2.07z"/><path fill="#EA4335" d="M8.98 4.18c1.17 0 2.23.4 3.06 1.2l2.3-2.3A8 8 0 0 0 1.83 5.4L4.5 7.49a4.77 4.77 0 0 1 4.48-3.3z"/></svg>
+      Google ile Giriş Yap
+    </button>
+    <button class="modal-close" id="loginModalClose">Şimdi değil</button>
+  </div>
+</div>
+
 <!-- PREMIUM MODAL -->
 <div class="modal-overlay" id="premiumModal">
   <div class="modal">
@@ -1032,7 +1106,7 @@ footer{border-top:1px solid var(--border);padding:32px 48px;display:flex;align-i
 
 <script>
 var GK = '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';
-var S = {gender:null,goal:null,level:null,days:null};
+var S = {gender:null,goal:null,level:null,days:null,location:null};
 var imgs = [];
 var mode = 'foto';
 var sidebarOpen = false;
@@ -1051,7 +1125,11 @@ function goLanding(){showPage('landingPage');}
 $('goIndividual').onclick = function(){showPage('individualPage');};
 $('goSalon').onclick = function(){showPage('salonPage');};
 $('backFromSalon').onclick = function(){showPage('landingPage');};
-$('goChangFit').onclick = function(){showPage('changPage');};
+$('goChangFit').onclick = function(){
+  document.getElementById('salonSifreModal').classList.add('show');
+  document.getElementById('salonSifreInput').value='';
+  setTimeout(function(){document.getElementById('salonSifreInput').focus();},300);
+};
 $('cMFoto').onclick = function(){alert('Chang Fitness fotoğraf modu — API key ile aktif olacak!');};
 $('cMOlcu').onclick = function(){alert('Chang Fitness ölçü modu — API key ile aktif olacak!');};
 
@@ -1112,6 +1190,16 @@ document.querySelectorAll('.sbtn').forEach(function(b){
 });
 document.querySelectorAll('.mchip').forEach(function(b){
   b.onclick=function(){this.classList.toggle('on');};
+});
+
+// HOME EQUIP TOGGLE
+document.querySelectorAll('.sbtn[data-g="location"]').forEach(function(b){
+  b.onclick=function(){
+    document.querySelectorAll('.sbtn[data-g="location"]').forEach(function(x){x.classList.remove('sel');});
+    this.classList.add('sel');
+    S.location=this.getAttribute('data-v');
+    $('homeEquip').style.display = (S.location==='evde') ? 'block' : 'none';
+  };
 });
 
 // BUTTONS
@@ -1205,14 +1293,14 @@ function analyze(){
   var prompt='Profesyonel AI antrenoru olarak Turkce, cok detayli, bilimsel ve kisisellestirilmis program hazirla. '+photoNote+
     'Kullanici: Yas '+age+', Boy '+height+'cm, Kilo '+weight+'kg, Yag %'+bodyfat+', BMI '+bmi+'. '+
     'Cinsiyet: '+S.gender+'. Tecrube: '+S.level+'. Hedef: '+S.goal+'. '+
-    'Oncelikli bolge: '+muscles+'. Haftalik: '+S.days+' gun. Saglik: '+injury+'. '+extra+
+    'Oncelikli bolge: '+muscles+'. Haftalik: '+S.days+' gun. Saglik: '+injury+'. Antrenman yeri: '+(S.location||'spor salonu')+'. Ekipman: '+(($('equipment')&&$('equipment').value)||'standart salon aletleri')+'. '+extra+
     'Basliklar: # Kisisel Program, ## Fizik Degerlendirmesi, ## Haftalik Antrenman Plani (tablolarla), ## Beslenme Rehberi, ## Supplement Onerileri, ## 12 Haftalik Gelisim. Markdown ve tablo kullan.';
 
   var messages = [{role:'user',content:prompt}];
 
   fetch('https://benes-proxy.emirbenes5.workers.dev', {
     method: 'POST',
-    headers: {'Content-Type':'application/json','Authorization':'Bearer '+GK},
+    headers: {'Content-Type':'application/json'},
     body: JSON.stringify({model:'gpt-4o-mini',messages:messages,max_tokens:3000,temperature:0.7})
   }).then(function(r){return r.json();}).then(function(data){
     clearInterval(iv);ld.classList.remove('on');
@@ -1226,6 +1314,14 @@ function analyze(){
     $('formArea').style.display='none';
     $('modeSelect').style.display='none';
     $('resultSection').style.display='block';
+    // Programı kaydet
+    if(window.saveProgramToHistory) window.saveProgramToHistory({
+      type:'bireysel', goal:S.goal, level:S.level, days:S.days,
+      age:age, weight:weight, height:height, bmi:bmi
+    });
+    // Profili kaydet
+    if(window.saveUserProfile) window.saveUserProfile({age:age,height:height,weight:weight,bodyfat:bodyfat});
+    if(window.showToast) showToast('Programın hazır! ✦');
   }).catch(function(e){clearInterval(iv);ld.classList.remove('on');err('Bağlantı hatası.');});
 }
 
@@ -1287,6 +1383,42 @@ $('closeModal').onclick=function(){$('premiumModal').classList.remove('show');};
 $('premiumModal').onclick=function(e){if(e.target===this)this.classList.remove('show');};
 
 function showPrivacy(){alert('Gizlilik Politikası sayfası yakında eklenecek.');}
+
+// LOGIN MODAL
+$('loginBtn').onclick=function(){ var user = window.getFirebaseUser ? window.getFirebaseUser() : null; if(user){if(confirm('Çıkış yapmak istiyor musun?')){window.firebaseLogout();}}else{showLoginModal();} };
+
+function showLoginModal(){
+  $('loginModal').classList.add('show');
+}
+
+$('loginModalClose').onclick=function(){$('loginModal').classList.remove('show');};
+$('loginModal').onclick=function(e){if(e.target===this)this.classList.remove('show');};
+
+$('loginSubmit').onclick=function(){
+  var email=$('loginEmail').value.trim();
+  var name=$('loginName').value.trim();
+  if(!email||!email.includes('@')) return alert('Geçerli bir e-posta girin!');
+  if(!name) return alert('Adınızı girin!');
+  localStorage.setItem('benes_user', email);
+  localStorage.setItem('benes_name', name);
+  $('loginModal').classList.remove('show');
+  updateLoginBtn();
+  alert('Hoş geldin, '+name+'! 🎉');
+};
+
+function updateLoginBtn(){
+  var name = localStorage.getItem('benes_name');
+  var email = localStorage.getItem('benes_user');
+  if(name) {
+    $('loginBtn').textContent = name.split(' ')[0];
+    $('loginBtn').style.background = 'rgba(212,168,75,0.2)';
+    $('loginBtn').style.color = 'var(--gold)';
+    $('loginBtn').style.border = '1px solid rgba(212,168,75,0.4)';
+  }
+}
+
+// Auto login check
+(function(){updateLoginBtn();})();
 
 // CHANG SECTION NAVIGATION
 var CS = {cgender:null,cgoal:null,clevel:null,cdays:null};
@@ -1427,7 +1559,7 @@ function cAnalyze(){
 
   fetch('https://benes-proxy.emirbenes5.workers.dev', {
     method: 'POST',
-    headers: {'Content-Type':'application/json','Authorization':'Bearer '+GK},
+    headers: {'Content-Type':'application/json'},
     body: JSON.stringify({model:'gpt-4o-mini',messages:[{role:'user',content:prompt}],max_tokens:3000,temperature:0.7})
   }).then(function(r){return r.json();}).then(function(data){
     clearInterval(iv);ld.classList.remove('on');
@@ -1440,8 +1572,50 @@ function cAnalyze(){
     $('cRbody').innerHTML=mdToHtml(text);
     $('cFormArea').style.display='none';
     $('cResultSection').style.display='block';
+    if(window.saveProgramToHistory) window.saveProgramToHistory({
+      type:'change-fitness', goal:CS.cgoal, level:CS.clevel, days:CS.cdays,
+      age:age, weight:weight, height:height, bmi:bmi
+    });
+    if(window.saveUserProfile) window.saveUserProfile({age:age,height:height,weight:weight,bodyfat:bodyfat});
+    if(window.showToast) showToast('Programın hazır! ✦');
   }).catch(function(e){clearInterval(iv);ld.classList.remove('on');err('Bağlantı hatası.');});
 }
+
+
+// YAZDIR / PDF
+function printProgram(){
+  var content = document.getElementById('rbody') || document.getElementById('cRbody');
+  if(!content) return;
+  var w = window.open('','_blank');
+  w.document.write('<html><head><title>Benes Program</title><style>body{font-family:Georgia,serif;padding:40px;max-width:800px;margin:0 auto;color:#111;}h1{font-size:1.8rem;border-bottom:2px solid #d4a84b;padding-bottom:12px;}h2{color:#8b6914;font-size:1.2rem;}h3{font-size:0.85rem;text-transform:uppercase;letter-spacing:2px;color:#666;}table{width:100%;border-collapse:collapse;margin:16px 0;}th{background:#f5e6c8;padding:8px 12px;text-align:left;font-size:0.75rem;}td{padding:8px 12px;border-bottom:1px solid #eee;}p{line-height:1.7;}@media print{body{padding:20px}}</style></head><body>');
+  w.document.write('<h1>🏋️ Benes AI Fitness Programı</h1>');
+  w.document.write(content.innerHTML);
+  w.document.write('<p style="margin-top:40px;font-size:0.75rem;color:#999;border-top:1px solid #eee;padding-top:12px">© 2026 Benes — benes.com.tr</p>');
+  w.document.write('</body></html>');
+  w.document.close();
+  setTimeout(function(){w.print();},500);
+}
+
+
+// SALON ŞİFRE
+document.getElementById('salonSifreBtn').onclick = function(){
+  var sifre = document.getElementById('salonSifreInput').value;
+  if(sifre === '185003'){
+    document.getElementById('salonSifreModal').classList.remove('show');
+    showPage('changPage');
+  } else {
+    document.getElementById('salonSifreInput').style.borderColor = 'var(--red)';
+    document.getElementById('salonSifreInput').value = '';
+    setTimeout(function(){document.getElementById('salonSifreInput').style.borderColor='';},1500);
+    if(window.showToast) showToast('Hatalı şifre!', 'error');
+  }
+};
+document.getElementById('salonSifreKapat').onclick = function(){
+  document.getElementById('salonSifreModal').classList.remove('show');
+};
+document.getElementById('salonSifreInput').onkeydown = function(e){
+  if(e.key==='Enter') document.getElementById('salonSifreBtn').click();
+};
 
 function cReset(){
   cImgs=[];CS.cgender=CS.cgoal=CS.clevel=CS.cdays=null;
@@ -1454,6 +1628,187 @@ function cReset(){
   $('cFormArea').style.display='none';
   $('cModeSelect').style.display='block';
 }
+
+</script>
+
+
+</html>
+
+<!-- FIREBASE AUTH + FIRESTORE -->
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
+import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js';
+import { getFirestore, doc, setDoc, getDoc, collection, addDoc, query, where, orderBy, limit, getDocs } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
+
+const firebaseConfig = {
+  apiKey: "AIzaSyA2j-9R94fIYrN5W1UkwVBYmVitLmXyDiE",
+  authDomain: "benes-5930c.firebaseapp.com",
+  projectId: "benes-5930c",
+  storageBucket: "benes-5930c.firebasestorage.app",
+  messagingSenderId: "172082713364",
+  appId: "1:172082713364:web:db6e9f11c1fd47d21aa801",
+  measurementId: "G-LRXV87WT26"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+const provider = new GoogleAuthProvider();
+let currentUser = null;
+
+// ===== AUTH STATE =====
+onAuthStateChanged(auth, async (user) => {
+  currentUser = user;
+  const btn = document.getElementById('loginBtn');
+  if (!btn) return;
+  
+  if (user) {
+    // Update button
+    const name = user.displayName ? user.displayName.split(' ')[0] : user.email.split('@')[0];
+    btn.textContent = name;
+    btn.style.cssText = 'background:rgba(212,168,75,0.15);color:var(--gold);border:1px solid rgba(212,168,75,0.4);padding:8px 20px;font-family:Syne,sans-serif;font-size:0.72rem;font-weight:700;letter-spacing:2px;cursor:pointer;transition:all 0.3s;';
+    
+    // Load user profile
+    try {
+      const docSnap = await getDoc(doc(db, 'users', user.uid));
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        // Auto-fill form fields
+        const fields = ['age', 'height', 'weight', 'bodyfat', 'injury', 'cage', 'cheight', 'cweight', 'cbodyfat', 'cinjury'];
+        const mapping = { cage: 'age', cheight: 'height', cweight: 'weight', cbodyfat: 'bodyfat', cinjury: 'injury' };
+        fields.forEach(id => {
+          const el = document.getElementById(id);
+          const key = mapping[id] || id;
+          if (el && data[key]) el.value = data[key];
+        });
+      }
+    } catch(e) { console.log('Profile load error:', e); }
+    
+    // Update program count
+    updateProgramCount(user.uid);
+    
+  } else {
+    btn.textContent = 'Giriş Yap';
+    btn.style.cssText = 'background:var(--gold);border:none;color:#000;padding:8px 20px;font-family:Syne,sans-serif;font-size:0.72rem;font-weight:700;letter-spacing:2px;cursor:pointer;transition:all 0.3s;';
+  }
+});
+
+// ===== LOGIN =====
+window.firebaseLogin = async function() {
+  try {
+    const result = await signInWithPopup(auth, provider);
+    const user = result.user;
+    
+    // Save/update user
+    await setDoc(doc(db, 'users', user.uid), {
+      name: user.displayName,
+      email: user.email,
+      photo: user.photoURL,
+      lastLogin: new Date().toISOString()
+    }, { merge: true });
+    
+    document.getElementById('loginModal')?.classList.remove('show');
+    showToast('Hoş geldin, ' + (user.displayName?.split(' ')[0] || '') + '! 🎉');
+  } catch(e) {
+    if (e.code !== 'auth/popup-closed-by-user') {
+      showToast('Giriş başarısız: ' + e.message, 'error');
+    }
+  }
+};
+
+// ===== LOGOUT =====
+window.firebaseLogout = async function() {
+  await signOut(auth);
+  showToast('Çıkış yapıldı');
+};
+
+// ===== SAVE PROFILE =====
+window.saveUserProfile = async function(data) {
+  if (!currentUser) return;
+  try {
+    await setDoc(doc(db, 'users', currentUser.uid), data, { merge: true });
+  } catch(e) { console.log('Save error:', e); }
+};
+
+// ===== SAVE PROGRAM =====
+window.saveProgramToHistory = async function(programData) {
+  if (!currentUser) return;
+  try {
+    await addDoc(collection(db, 'programs'), {
+      userId: currentUser.uid,
+      ...programData,
+      createdAt: new Date().toISOString()
+    });
+    updateProgramCount(currentUser.uid);
+  } catch(e) { console.log('Save program error:', e); }
+};
+
+// ===== PROGRAM COUNT =====
+async function updateProgramCount(uid) {
+  try {
+    const q = query(collection(db, 'programs'), where('userId', '==', uid));
+    const snap = await getDocs(q);
+    const count = snap.size;
+    
+    // Update report cards
+    const rcards = document.querySelectorAll('.rcard-num');
+    if (rcards.length > 0) rcards[0].textContent = count;
+    if (rcards.length > 1) {
+      const thisMonth = snap.docs.filter(d => {
+        const date = new Date(d.data().createdAt);
+        const now = new Date();
+        return date.getMonth() === now.getMonth() && date.getFullYear() === now.getFullYear();
+      }).length;
+      rcards[1].textContent = thisMonth;
+    }
+    if (rcards.length > 2 && snap.docs.length > 0) {
+      const last = snap.docs[snap.docs.length - 1].data();
+      const date = new Date(last.createdAt);
+      rcards[2].textContent = date.toLocaleDateString('tr-TR');
+    }
+  } catch(e) {}
+}
+
+// ===== GET USER =====
+window.getFirebaseUser = function() { return currentUser; };
+
+// ===== TOAST NOTIFICATION =====
+window.showToast = function(msg, type = 'success') {
+  const toast = document.createElement('div');
+  toast.style.cssText = `position:fixed;bottom:32px;left:50%;transform:translateX(-50%);background:${type==='error'?'rgba(224,82,82,0.95)':'rgba(82,200,122,0.95)'};color:#fff;padding:14px 28px;font-family:Syne,sans-serif;font-size:0.82rem;font-weight:600;z-index:9999;border-radius:2px;box-shadow:0 8px 32px rgba(0,0,0,0.3);animation:toastIn 0.3s ease;`;
+  toast.textContent = msg;
+  document.body.appendChild(toast);
+  setTimeout(() => { toast.style.opacity = '0'; toast.style.transition = 'opacity 0.3s'; setTimeout(() => toast.remove(), 300); }, 3000);
+};
+
+// Add toast animation
+const style = document.createElement('style');
+style.textContent = '@keyframes toastIn{from{opacity:0;transform:translateX(-50%) translateY(20px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}';
+document.head.appendChild(style);
+
+// ===== LOGIN BUTTON =====
+document.addEventListener('DOMContentLoaded', function() {
+  const btn = document.getElementById('loginBtn');
+  if (btn) {
+    btn.onclick = function() {
+      if (currentUser) {
+        if (confirm('Çıkış yapmak istiyor musun?')) window.firebaseLogout();
+      } else {
+        document.getElementById('loginModal')?.classList.add('show');
+      }
+    };
+  }
+  
+  document.getElementById('loginModalClose')?.addEventListener('click', () => {
+    document.getElementById('loginModal')?.classList.remove('show');
+  });
+  
+  document.getElementById('loginModal')?.addEventListener('click', function(e) {
+    if (e.target === this) this.classList.remove('show');
+  });
+  
+  document.getElementById('googleLoginBtn')?.addEventListener('click', window.firebaseLogin);
+});
 
 </script>
 </body>
