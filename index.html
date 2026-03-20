@@ -1210,7 +1210,7 @@ function analyze(){
 
   var messages = [{role:'user',content:prompt}];
 
-  fetch('https://api.openai.com/v1/chat/completions', {
+  fetch('https://benes-proxy.emirbenes5.workers.dev'
     method: 'POST',
     headers: {'Content-Type':'application/json','Authorization':'Bearer '+GK},
     body: JSON.stringify({model:'gpt-4o-mini',messages:messages,max_tokens:3000,temperature:0.7})
@@ -1424,8 +1424,7 @@ function cAnalyze(){
     'Basliklar: # Change Fitness Kisisel Program, ## Fizik Degerlendirmesi, ## Haftalik Antrenman Plani (tablolarla), ## Beslenme Rehberi, ## Supplement Onerileri, ## 12 Haftalik Gelisim. Markdown ve tablo kullan.';
 
   // Photos not supported in this mode
-
-  fetch('https://api.openai.com/v1/chat/completions', {
+  fetch('https://benes-proxy.emirbenes5.workers.dev'
     method: 'POST',
     headers: {'Content-Type':'application/json','Authorization':'Bearer '+GK},
     body: JSON.stringify({model:'gpt-4o-mini',messages:[{role:'user',content:prompt}],max_tokens:3000,temperature:0.7})
