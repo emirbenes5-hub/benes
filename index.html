@@ -3,7 +3,31 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Benes — AI Fitness Platform</title>
+<title>Benes — Türkiye'nin İlk AI Fitness Platformu</title>
+<meta name="description" content="Yapay zeka destekli kişisel antrenman ve beslenme programı. Fotoğrafını yükle, AI vücudunu analiz etsin, 2 dakikada kişisel program al.">
+<meta name="keywords" content="ai fitness, yapay zeka antrenman, kişisel program, spor programı, benes">
+<meta name="author" content="BNS Bilişim & Yazılım Otomasyon">
+<meta property="og:title" content="Benes — AI Fitness Platform">
+<meta property="og:description" content="Türkiye'nin ilk AI destekli fitness platformu. 2 dakikada kişisel antrenman programı al.">
+<meta property="og:url" content="https://www.benes.com.tr">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://www.benes.com.tr">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Benes AI Fitness",
+  "operatingSystem": "Web",
+  "applicationCategory": "HealthApplication",
+  "description": "Yapay zeka destekli kişisel antrenman ve beslenme programı platformu",
+  "url": "https://www.benes.com.tr",
+  "author": {"@type": "Organization", "name": "BNS Bilişim & Yazılım Otomasyon"}
+}
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.6/purify.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;1,400&family=Syne:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
@@ -1290,11 +1314,11 @@ function analyze(){
   }
 
   var photoNote=(mode==='foto'&&imgs.length>0)?'Fotograflari gorsel analiz ile degerlendir. ':'';
-  var prompt='Profesyonel AI antrenoru olarak Turkce, cok detayli, bilimsel ve kisisellestirilmis program hazirla. '+photoNote+
+  var prompt='Profesyonel AI antrenoru ve vucut analisti olarak Turkce, cok detayli, bilimsel program hazirla. '+photoNote+
     'Kullanici: Yas '+age+', Boy '+height+'cm, Kilo '+weight+'kg, Yag %'+bodyfat+', BMI '+bmi+'. '+
     'Cinsiyet: '+S.gender+'. Tecrube: '+S.level+'. Hedef: '+S.goal+'. '+
     'Oncelikli bolge: '+muscles+'. Haftalik: '+S.days+' gun. Saglik: '+injury+'. Antrenman yeri: '+(S.location||'spor salonu')+'. Ekipman: '+(($('equipment')&&$('equipment').value)||'standart salon aletleri')+'. '+extra+
-    'Basliklar: # Kisisel Program, ## Fizik Degerlendirmesi, ## Haftalik Antrenman Plani (tablolarla), ## Beslenme Rehberi, ## Supplement Onerileri, ## 12 Haftalik Gelisim. Markdown ve tablo kullan.';
+    'ONEMLI: Once # Vucut Analizi ve Oran Degerlendirmesi basliginda su bilgileri ver: Vucut tipini (ektomorf/mezomorf/endomorf), zayif ve guclu kas gruplarini, vucut oranlarini (omuz/bel/kalca dengesi), oncelikli gelistirilmesi gereken bolgeler. SONRA su basliklarla devam et: ## Haftalik Antrenman Plani (tablolarla), ## Beslenme Rehberi (kalori ve makrolar), ## Supplement Onerileri, ## 12 Haftalik Gelisim Yol Haritasi. Markdown ve tablo kullan.';
 
   var messages = [{role:'user',content:prompt}];
 
@@ -1310,7 +1334,7 @@ function analyze(){
     statsHtml += '<div style="text-align:right"><div style="font-size:1.4rem;color:var(--gold)">'+weight+'kg</div><div style="font-size:0.48rem;color:var(--muted)">KİLO</div></div>';
     statsHtml += '<div style="text-align:right"><div style="font-size:1.4rem;color:var(--gold)">'+S.days+'g</div><div style="font-size:0.48rem;color:var(--muted)">PROGRAM</div></div>';
     $('rstats').innerHTML = statsHtml;
-    $('rbody').innerHTML=mdToHtml(text);
+    $('rbody').innerHTML = (typeof DOMPurify !== 'undefined') ? DOMPurify.sanitize(mdToHtml(text)) : mdToHtml(text);
     $('formArea').style.display='none';
     $('modeSelect').style.display='none';
     $('resultSection').style.display='block';
@@ -1553,7 +1577,7 @@ function cAnalyze(){
     'Kullanici: Yas '+age+', Boy '+height+'cm, Kilo '+weight+'kg, Yag %'+bodyfat+', BMI '+bmi+'. '+
     'Cinsiyet: '+CS.cgender+'. Tecrube: '+CS.clevel+'. Hedef: '+CS.cgoal+'. '+
     'Oncelikli bolge: '+muscles+'. Haftalik: '+CS.cdays+' gun. Saglik: '+injury+'. '+extra+
-    'Basliklar: # Change Fitness Kisisel Program, ## Fizik Degerlendirmesi, ## Haftalik Antrenman Plani (tablolarla), ## Beslenme Rehberi, ## Supplement Onerileri, ## 12 Haftalik Gelisim. Markdown ve tablo kullan.';
+    'ONEMLI: Once # Vucut Analizi ve Oran Degerlendirmesi basliginda su bilgileri ver: Vucut tipini, zayif/guclu kas gruplarini, vucut oranlarini, oncelikli gelistirilmesi gereken bolgeler. SONRA: ## Change Fitness Haftalik Antrenman Plani (tablolarla), ## Beslenme Rehberi (kalori ve makrolar), ## Supplement Onerileri, ## 12 Haftalik Gelisim Yol Haritasi. Markdown ve tablo kullan.';
 
   // Photos not supported in this mode
 
@@ -1569,7 +1593,7 @@ function cAnalyze(){
     ch += '<div style="text-align:right"><div style="font-size:1.4rem;color:var(--gold)">'+weight+'kg</div><div style="font-size:0.48rem;color:var(--muted)">KİLO</div></div>';
     ch += '<div style="text-align:right"><div style="font-size:1.4rem;color:var(--gold)">'+CS.cdays+'g</div><div style="font-size:0.48rem;color:var(--muted)">PROGRAM</div></div>';
     $('cRstats').innerHTML = ch;
-    $('cRbody').innerHTML=mdToHtml(text);
+    $('cRbody').innerHTML = (typeof DOMPurify !== 'undefined') ? DOMPurify.sanitize(mdToHtml(text)) : mdToHtml(text);
     $('cFormArea').style.display='none';
     $('cResultSection').style.display='block';
     if(window.saveProgramToHistory) window.saveProgramToHistory({
@@ -1583,39 +1607,8 @@ function cAnalyze(){
 
 
 // YAZDIR / PDF
-function printProgram(){
-  var content = document.getElementById('rbody') || document.getElementById('cRbody');
-  if(!content) return;
-  var w = window.open('','_blank');
-  w.document.write('<html><head><title>Benes Program</title><style>body{font-family:Georgia,serif;padding:40px;max-width:800px;margin:0 auto;color:#111;}h1{font-size:1.8rem;border-bottom:2px solid #d4a84b;padding-bottom:12px;}h2{color:#8b6914;font-size:1.2rem;}h3{font-size:0.85rem;text-transform:uppercase;letter-spacing:2px;color:#666;}table{width:100%;border-collapse:collapse;margin:16px 0;}th{background:#f5e6c8;padding:8px 12px;text-align:left;font-size:0.75rem;}td{padding:8px 12px;border-bottom:1px solid #eee;}p{line-height:1.7;}@media print{body{padding:20px}}</style></head><body>');
-  w.document.write('<h1>🏋️ Benes AI Fitness Programı</h1>');
-  w.document.write(content.innerHTML);
-  w.document.write('<p style="margin-top:40px;font-size:0.75rem;color:#999;border-top:1px solid #eee;padding-top:12px">© 2026 Benes — benes.com.tr</p>');
-  w.document.write('</body></html>');
-  w.document.close();
-  setTimeout(function(){w.print();},500);
-}
 
 
-// SALON ŞİFRE
-document.getElementById('salonSifreBtn').onclick = function(){
-  var sifre = document.getElementById('salonSifreInput').value;
-  if(sifre === '185003'){
-    document.getElementById('salonSifreModal').classList.remove('show');
-    showPage('changPage');
-  } else {
-    document.getElementById('salonSifreInput').style.borderColor = 'var(--red)';
-    document.getElementById('salonSifreInput').value = '';
-    setTimeout(function(){document.getElementById('salonSifreInput').style.borderColor='';},1500);
-    if(window.showToast) showToast('Hatalı şifre!', 'error');
-  }
-};
-document.getElementById('salonSifreKapat').onclick = function(){
-  document.getElementById('salonSifreModal').classList.remove('show');
-};
-document.getElementById('salonSifreInput').onkeydown = function(e){
-  if(e.key==='Enter') document.getElementById('salonSifreBtn').click();
-};
 
 function cReset(){
   cImgs=[];CS.cgender=CS.cgoal=CS.clevel=CS.cdays=null;
