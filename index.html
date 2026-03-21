@@ -1054,6 +1054,11 @@ onAuthStateChanged(auth, async (user) => {
     const name = user.displayName ? user.displayName.split(' ')[0] : user.email.split('@')[0];
     btn.textContent = name;
     btn.style.cssText = 'background:rgba(212,168,75,0.15);color:var(--gold);border:1px solid rgba(212,168,75,0.4);padding:8px 20px;font-family:Syne,sans-serif;font-size:0.72rem;font-weight:700;letter-spacing:2px;cursor:pointer;transition:all 0.3s;';
+    // Redirect'ten mi geliyoruz kontrol et
+    if (localStorage.getItem('benes_login_pending') === '1') {
+      localStorage.removeItem('benes_login_pending');
+      window.showToast('Hoş geldin, ' + name + '! 🎉');
+    }
     try {
       const docSnap = await getDoc(doc(db, 'users', user.uid));
       if (docSnap.exists()) {
@@ -1074,29 +1079,9 @@ onAuthStateChanged(auth, async (user) => {
   }
 });
 
-window.firebaseLogin = async function() {
-  try {
-    // Mobil tarayıcılarda popup çalışmıyor, redirect kullan
-    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-    if (isMobile) {
-      await signInWithRedirect(auth, provider);
-    } else {
-      const result = await signInWithPopup(auth, provider);
-      const user = result.user;
-      await setDoc(doc(db, 'users', user.uid), {
-        name: user.displayName,
-        email: user.email,
-        photo: user.photoURL,
-        lastLogin: new Date().toISOString()
-      }, { merge: true });
-      document.getElementById('loginModal')?.classList.remove('show');
-      window.showToast('Hoş geldin, ' + (user.displayName?.split(' ')[0] || '') + '! 🎉');
-    }
-  } catch(e) {
-    if (e.code !== 'auth/popup-closed-by-user') {
-      if(window.showToast) window.showToast('Giriş başarısız: ' + e.message, 'error');
-    }
-  }
+window.firebaseLogin = function() {
+  localStorage.setItem('benes_login_pending', '1');
+  signInWithRedirect(auth, provider);
 };
 
 window.firebaseLogout = async function() {
