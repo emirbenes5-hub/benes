@@ -1000,12 +1000,12 @@ $('salonSifreKapat').onclick=function(){$('salonSifreModal').classList.remove('s
 <!-- FIREBASE AUTH + FIRESTORE -->
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
-import { getAuth, signInWithRedirect, getRedirectResult, GoogleAuthProvider, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js';
+import { getAuth, signInWithPopup, signInWithRedirect, getRedirectResult, GoogleAuthProvider, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js';
 import { getFirestore, doc, setDoc, getDoc, collection, addDoc, query, where, getDocs } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
 
 const firebaseConfig = {
   apiKey: "AIzaSyA2j-9R94fIYrN5W1UkwVBYmVitLmXyDiE",
-  authDomain: "www.benes.com.tr",
+  authDomain: "benes-5930c.firebaseapp.com",
   projectId: "benes-5930c",
   storageBucket: "benes-5930c.firebasestorage.app",
   messagingSenderId: "172082713364",
@@ -1076,9 +1076,26 @@ onAuthStateChanged(auth, async (user) => {
 
 window.firebaseLogin = async function() {
   try {
-    await signInWithRedirect(auth, provider);
+    // Mobil tarayıcılarda popup çalışmıyor, redirect kullan
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    if (isMobile) {
+      await signInWithRedirect(auth, provider);
+    } else {
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+      await setDoc(doc(db, 'users', user.uid), {
+        name: user.displayName,
+        email: user.email,
+        photo: user.photoURL,
+        lastLogin: new Date().toISOString()
+      }, { merge: true });
+      document.getElementById('loginModal')?.classList.remove('show');
+      window.showToast('Hoş geldin, ' + (user.displayName?.split(' ')[0] || '') + '! 🎉');
+    }
   } catch(e) {
-    if(window.showToast) window.showToast('Giriş başarısız: ' + e.message, 'error');
+    if (e.code !== 'auth/popup-closed-by-user') {
+      if(window.showToast) window.showToast('Giriş başarısız: ' + e.message, 'error');
+    }
   }
 };
 
