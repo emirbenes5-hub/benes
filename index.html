@@ -335,7 +335,7 @@ footer{border-top:1px solid var(--border);padding:32px 48px;display:flex;align-i
       <div id="hakkimizda" style="padding:60px 0;border-top:1px solid var(--border);text-align:center;">
         <div style="font-family:'JetBrains Mono',monospace;font-size:0.58rem;letter-spacing:4px;color:var(--gold);text-transform:uppercase;margin-bottom:16px">// Benes Nedir?</div>
         <div style="font-family:'Playfair Display',serif;font-size:2.8rem;font-weight:500;margin-bottom:20px">Türkiye'nin İlk <em style="font-style:italic;color:var(--gold)">AI Fitness</em> Platformu</div>
-        <p style="color:var(--muted);font-size:0.9rem;line-height:1.9;max-width:620px;margin:0 auto 40px;font-weight:300">Benes, yapay zeka teknolojisini spor dünyasıyla buluşturan yenilikçi bir platformdur. Fotoğrafın veya vücut ölçülerinle saniyeler içinde bilimsel, kişiselleştirilmiş antrenman ve beslenme programı alırsın. Spor salonları için özel entegrasyon ile üyelerine profesyonel hizmet sun.</p>
+        <p style="color:var(--muted);font-size:0.9rem;line-height:1.9;max-width:620px;margin:0 auto 40px;font-weight:300">Benes, yapay zeka teknolojisini spor dünyasıyla buluşturan yenilikçi bir platformdur. Fotoğrafın veya vücut ölçülerinle saniyeler içinde bilimsel, kişiselleştirilmiş antrenman ve beslenme programı alırsın. Spor salonları için özel entegrasyon ile üyelerine profesyonel hizmet sunar.</p>
         <div style="display:flex;gap:20px;justify-content:center;flex-wrap:wrap;margin-top:8px;">
           <div style="text-align:center;padding:24px;background:rgba(255,255,255,0.025);border:1px solid var(--border);width:180px;">
             <div style="font-size:1.8rem;margin-bottom:8px">📸</div>
@@ -656,7 +656,7 @@ footer{border-top:1px solid var(--border);padding:32px 48px;display:flex;align-i
         <div class="sc-num">01</div>
         <div class="sc-name">Change Fitness</div>
         <div class="sc-city">📍 Adana · Since 2020</div>
-        <div class="sc-tags"><span class="sc-tag">AKTİF</span><span class="sc-tag">AI DESTEKLI</span></div>
+        <div class="sc-tags"><span class="sc-tag">AKTİF</span><span class="sc-tag">AI DESTEKLİ</span></div>
         <div class="sc-enter">Giriş Yap →</div>
       </div>
       <div class="scard soon">
@@ -1019,6 +1019,19 @@ const db = getFirestore(app);
 const provider = new GoogleAuthProvider();
 let currentUser = null;
 
+// Toast fonksiyonu burada tanımla (redirect sonucu için erken lazım)
+window.showToast = function(msg, type = 'success') {
+  const toast = document.createElement('div');
+  toast.style.cssText = `position:fixed;bottom:32px;left:50%;transform:translateX(-50%);background:${type==='error'?'rgba(224,82,82,0.95)':'rgba(82,200,122,0.95)'};color:#fff;padding:14px 28px;font-family:Syne,sans-serif;font-size:0.82rem;font-weight:600;z-index:9999;border-radius:2px;box-shadow:0 8px 32px rgba(0,0,0,0.3);animation:toastIn 0.3s ease;`;
+  toast.textContent = msg;
+  document.body.appendChild(toast);
+  setTimeout(() => { toast.style.opacity='0'; toast.style.transition='opacity 0.3s'; setTimeout(()=>toast.remove(),300); }, 3000);
+};
+
+const toastStyle = document.createElement('style');
+toastStyle.textContent = '@keyframes toastIn{from{opacity:0;transform:translateX(-50%) translateY(20px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}';
+document.head.appendChild(toastStyle);
+
 // Redirect sonucu yakala
 getRedirectResult(auth).then(async result => {
   if (!result?.user) return;
@@ -1030,7 +1043,7 @@ getRedirectResult(auth).then(async result => {
     lastLogin: new Date().toISOString()
   }, { merge: true });
   document.getElementById('loginModal')?.classList.remove('show');
-  if(window.showToast) window.showToast('Hoş geldin, ' + (user.displayName?.split(' ')[0] || '') + '! 🎉');
+  window.showToast('Hoş geldin, ' + (user.displayName?.split(' ')[0] || '') + '! 🎉');
 }).catch(e => console.log('Redirect result error:', e));
 
 onAuthStateChanged(auth, async (user) => {
@@ -1110,18 +1123,6 @@ async function updateProgramCount(uid) {
 }
 
 window.getFirebaseUser = function() { return currentUser; };
-
-window.showToast = function(msg, type = 'success') {
-  const toast = document.createElement('div');
-  toast.style.cssText = `position:fixed;bottom:32px;left:50%;transform:translateX(-50%);background:${type==='error'?'rgba(224,82,82,0.95)':'rgba(82,200,122,0.95)'};color:#fff;padding:14px 28px;font-family:Syne,sans-serif;font-size:0.82rem;font-weight:600;z-index:9999;border-radius:2px;box-shadow:0 8px 32px rgba(0,0,0,0.3);animation:toastIn 0.3s ease;`;
-  toast.textContent = msg;
-  document.body.appendChild(toast);
-  setTimeout(() => { toast.style.opacity='0'; toast.style.transition='opacity 0.3s'; setTimeout(()=>toast.remove(),300); }, 3000);
-};
-
-const style = document.createElement('style');
-style.textContent = '@keyframes toastIn{from{opacity:0;transform:translateX(-50%) translateY(20px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}';
-document.head.appendChild(style);
 
 document.addEventListener('DOMContentLoaded', function() {
   document.getElementById('loginModalClose')?.addEventListener('click', () => {
